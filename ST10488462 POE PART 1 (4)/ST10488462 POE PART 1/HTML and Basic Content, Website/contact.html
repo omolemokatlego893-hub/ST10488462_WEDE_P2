@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Get in touch with Paws Haven Animal Rescue. Find our shelter locations and contact details.">
+    <meta name="keywords" content="contact, dog shelter locations, Paws Haven">
+
+    <!-- Links this page to the external stylesheet, so all styling is in one shared file -->
+    <link rel="stylesheet" href="style.css">
+
+    <title>Paws Haven Animal Rescue | Contact</title>
+</head>
+<body>
+
+    <header>
+        <h1>Paws Haven Animal Rescue</h1>
+        <p>Giving rescued dogs a second chance at life</p>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Adoption</a></li>
+                <li><a href="enquiry.html">Volunteer / Sponsor</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section id="contact-details">
+            <h2>Get in Touch</h2>
+            <p>Email: info@pawshaven.org</p>
+            <p>Phone: 012 345 6789</p>
+            <p>Opening Hours: Monday - Saturday, 9am - 4pm</p>
+        </section>
+
+        <!-- Two shelter locations, as required by the brief -->
+        <section id="our-locations">
+            <h2>Our Locations</h2>
+
+            <h3>Main Shelter - Pretoria</h3>
+            <iframe
+                src="https://www.google.com/maps?q=Pretoria,South+Africa&output=embed"
+                width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                title="Map showing Paws Haven main shelter location in Pretoria">
+            </iframe>
+
+            <h3>Satellite Adoption Centre - Centurion</h3>
+            <iframe
+                src="https://www.google.com/maps?q=Centurion,South+Africa&output=embed"
+                width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                title="Map showing Paws Haven satellite adoption centre location in Centurion">
+            </iframe>
+        </section>
+
+        <!-- Contact form -->
+        <section id="contact-form">
+            <h2>Send Us a Message</h2>
+            <form action="#" method="post">
+
+                <label for="cf-name">Full Name:</label>
+                <input type="text" id="cf-name" name="cf-name" required>
+
+                <label for="cf-email">Email Address:</label>
+                <input type="email" id="cf-email" name="cf-email" required>
+
+                <label for="cf-message">Message:</label>
+                <textarea id="cf-message" name="cf-message" rows="5" required></textarea>
+
+                <button type="submit">Send Message</button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Paws Haven Animal Rescue. All rights reserved.</p>
+        <p>Contact us: <a href="contact.html">contact.html</a></p>
+    </footer>
+
+</body>
+</html>

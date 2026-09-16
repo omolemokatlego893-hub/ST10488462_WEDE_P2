@@ -1,0 +1,500 @@
+/* =========================================================
+   PAWS HAVEN ANIMAL RESCUE — MAIN STYLESHEET
+   WEDE5020 POE Part 2: CSS Styling and Responsive Design
+   =========================================================
+   Sections:
+   1. CSS Reset
+   2. Base Styles (root variables, fonts, colours)
+   3. Typography
+   4. Header & Navigation
+   5. Section spacing (shared layout rules)
+   6. Homepage styles
+   7. About Us page styles
+   8. Adoption page styles (Flexbox card layout)
+   9. Enquiry & Contact form styles
+   10. Footer
+   11. Interactive states (:hover, :focus, :active)
+   12. Responsive Design (media queries)
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   1. CSS RESET
+   Removes inconsistent default spacing/styles browsers apply,
+   so the site looks the same across Chrome, Edge, Firefox, etc.
+--------------------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+
+/* ---------------------------------------------------------
+   2. BASE STYLES
+   Root variables define the colour palette and spacing scale
+   used throughout the site, so changing a value here updates
+   it everywhere it's used (the "cascading" advantage of CSS).
+--------------------------------------------------------- */
+:root {
+    /* Colour palette: warm, friendly tones suited to an animal shelter */
+    --color-primary: #d97845;      /* warm terracotta - buttons, links, accents */
+    --color-primary-dark: #b85f30; /* hover state for primary elements */
+    --color-secondary: #4a7c59;    /* calm green - secondary accents */
+    --color-background: #faf6f0;   /* soft cream page background */
+    --color-surface: #ffffff;      /* card/section backgrounds */
+    --color-text: #33302c;         /* main body text */
+    --color-text-light: #6b665f;   /* secondary/muted text */
+    --color-border: #e2dcd2;       /* subtle borders */
+
+    /* Spacing scale (relative units, used instead of fixed pixel values) */
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+
+    /* Typography scale */
+    --font-base: 1rem;      /* 16px */
+    --font-h1: 2.25rem;
+    --font-h2: 1.75rem;
+    --font-h3: 1.25rem;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    font-size: var(--font-base);
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-background);
+}
+
+
+/* ---------------------------------------------------------
+   3. TYPOGRAPHY
+--------------------------------------------------------- */
+h1, h2, h3 {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--color-primary-dark);
+    line-height: 1.25;
+    margin-bottom: var(--space-md);
+    letter-spacing: 0.01em;
+}
+
+h1 {
+    font-size: var(--font-h1);
+}
+
+h2 {
+    font-size: var(--font-h2);
+}
+
+h3 {
+    font-size: var(--font-h3);
+}
+
+p {
+    margin-bottom: var(--space-md);
+    max-width: 70ch; /* keeps line length comfortable to read */
+}
+
+
+/* ---------------------------------------------------------
+   4. HEADER & NAVIGATION
+--------------------------------------------------------- */
+header {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-lg) var(--space-lg) var(--space-md);
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: var(--space-sm);
+}
+
+header > p {
+    color: var(--color-text-light);
+    margin-bottom: var(--space-lg);
+    max-width: none;
+}
+
+nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-lg);
+}
+
+nav li {
+    /* Fallback spacing in case a browser doesn't support flexbox 'gap' */
+    margin: 0 calc(var(--space-lg) / 2);
+}
+
+nav a {
+    font-weight: 600;
+    padding: var(--space-sm) 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+
+/* ---------------------------------------------------------
+   5. SECTION SPACING
+   Shared layout rules so every page's <main> content is
+   consistently centred and spaced, regardless of page.
+--------------------------------------------------------- */
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-lg);
+}
+
+main section {
+    margin-bottom: var(--space-xl);
+}
+
+
+/* ---------------------------------------------------------
+   6. HOMEPAGE STYLES
+--------------------------------------------------------- */
+#hero {
+    text-align: center;
+}
+
+#hero img {
+    border-radius: 12px;
+    margin-bottom: var(--space-lg);
+    max-height: 420px;
+    width: 100%;
+    object-fit: cover;
+}
+
+#hero p {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-weight: 600;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: 8px;
+    margin-top: var(--space-sm);
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+#what-we-do ul {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+#what-we-do li {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: var(--space-md);
+}
+
+#get-involved {
+    background-color: var(--color-surface);
+    border-left: 4px solid var(--color-secondary);
+    border-radius: 8px;
+    padding: var(--space-lg);
+}
+
+
+/* ---------------------------------------------------------
+   7. ABOUT US PAGE STYLES
+--------------------------------------------------------- */
+#mission-vision {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+#our-team img {
+    border-radius: 12px;
+    margin-top: var(--space-md);
+    max-height: 360px;
+    width: 100%;
+    object-fit: cover;
+}
+
+
+/* ---------------------------------------------------------
+   8. ADOPTION PAGE STYLES (Flexbox card layout)
+--------------------------------------------------------- */
+#available-dogs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-lg);
+}
+
+.dog-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    flex: 1 1 260px;
+    max-width: 300px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dog-card img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.dog-card h3,
+.dog-card p {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+}
+
+.dog-card h3 {
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.dog-card p {
+    color: var(--color-text-light);
+    margin-bottom: var(--space-md);
+}
+
+#adoption-process ol {
+    list-style: decimal;
+    padding-left: var(--space-lg);
+}
+
+#adoption-process li {
+    margin-bottom: var(--space-sm);
+}
+
+
+/* ---------------------------------------------------------
+   9. ENQUIRY & CONTACT FORM STYLES
+--------------------------------------------------------- */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    max-width: 560px;
+}
+
+label {
+    font-weight: 600;
+    margin-top: var(--space-sm);
+}
+
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: var(--font-base);
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+textarea {
+    resize: vertical;
+}
+
+button[type="submit"] {
+    align-self: flex-start;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: var(--font-base);
+    border: none;
+    border-radius: 8px;
+    padding: var(--space-sm) var(--space-lg);
+    margin-top: var(--space-sm);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+#our-locations iframe {
+    border-radius: 8px;
+    margin-bottom: var(--space-lg);
+}
+
+#contact-details p {
+    max-width: none;
+}
+
+
+/* ---------------------------------------------------------
+   10. FOOTER
+--------------------------------------------------------- */
+footer {
+    background-color: var(--color-text);
+    color: var(--color-background);
+    text-align: center;
+    padding: var(--space-lg);
+}
+
+footer p {
+    max-width: none;
+    margin-bottom: var(--space-sm);
+    color: inherit;
+}
+
+footer a {
+    text-decoration: underline;
+}
+
+
+/* ---------------------------------------------------------
+   11. INTERACTIVE STATES (:hover, :focus, :active)
+--------------------------------------------------------- */
+nav a:hover,
+nav a:focus {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+nav a:active {
+    color: var(--color-primary-dark);
+}
+
+.cta-button:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+.cta-button:active {
+    transform: translateY(0);
+}
+
+.dog-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+}
+
+button[type="submit"]:hover {
+    background-color: var(--color-primary-dark);
+}
+
+button[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(217, 120, 69, 0.2);
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+
+/* ---------------------------------------------------------
+   12. RESPONSIVE DESIGN
+   Breakpoints:
+     - Tablet:  max-width 768px
+     - Mobile:  max-width 480px
+   Layout switches from multi-column to single-column, nav
+   stacks vertically, and spacing/font sizes shrink slightly
+   to suit smaller screens.
+--------------------------------------------------------- */
+
+/* ---- Tablet ---- */
+@media (max-width: 768px) {
+    :root {
+        --font-h1: 1.85rem;
+        --font-h2: 1.5rem;
+        --font-h3: 1.15rem;
+    }
+
+    main {
+        padding: var(--space-lg) var(--space-md);
+    }
+
+    nav ul {
+        gap: var(--space-md);
+    }
+
+    #what-we-do ul {
+        grid-template-columns: 1fr;
+    }
+
+    #mission-vision {
+        grid-template-columns: 1fr;
+    }
+
+    .dog-card {
+        flex: 1 1 45%;
+    }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+    header {
+        padding: var(--space-md);
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    main {
+        padding: var(--space-md) var(--space-sm);
+    }
+
+    #hero img {
+        max-height: 260px;
+    }
+
+    .dog-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    form {
+        padding: var(--space-md);
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        text-align: center;
+    }
+}

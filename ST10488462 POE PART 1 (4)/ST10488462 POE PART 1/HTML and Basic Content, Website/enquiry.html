@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Enquire about volunteering or sponsoring a dog at Paws Haven Animal Rescue.">
+    <meta name="keywords" content="volunteer, sponsor a dog, dog charity volunteer, Paws Haven">
+
+    <!-- Links this page to the external stylesheet, so all styling is in one shared file -->
+    <link rel="stylesheet" href="style.css">
+
+    <title>Paws Haven Animal Rescue | Volunteer / Sponsor</title>
+</head>
+<body>
+
+    <header>
+        <h1>Paws Haven Animal Rescue</h1>
+        <p>Giving rescued dogs a second chance at life</p>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Adoption</a></li>
+                <li><a href="enquiry.html">Volunteer / Sponsor</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section id="enquiry-intro">
+            <h2>Volunteer or Sponsor a Dog</h2>
+            <p>
+                Paws Haven relies on volunteers and sponsors to keep our shelter
+                running. Whether you have a few hours a week to spare or would
+                like to sponsor a dog's medical care, fill in the form below and
+                our team will be in touch.
+            </p>
+        </section>
+
+        <!-- Enquiry form: required attribute gives basic browser-level validation -->
+        <section id="enquiry-form">
+            <form action="#" method="post">
+
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" required>
+
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone">
+
+                <label for="enquiry-type">I am interested in:</label>
+                <select id="enquiry-type" name="enquiry-type" required>
+                    <option value="">-- Please choose --</option>
+                    <option value="volunteer">Volunteering</option>
+                    <option value="sponsor">Sponsoring a dog</option>
+                    <option value="both">Both</option>
+                </select>
+
+                <label for="message">Tell us a bit about yourself:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+
+                <button type="submit">Submit Enquiry</button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Paws Haven Animal Rescue. All rights reserved.</p>
+        <p>Contact us: <a href="contact.html">contact.html</a></p>
+    </footer>
+
+</body>
+</html>
