@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="style.css">
 
     <title>Paws Haven Animal Rescue | Adoption</title>
+    <!-- Links the JavaScript file. 'defer' makes it run only after the whole page has loaded -->
+    <script src="js/script.js" defer></script>
 </head>
 <body>
 
@@ -46,19 +48,19 @@
         <section id="available-dogs">
 
             <article class="dog-card">
-                <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog available for adoption">
+                <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog available for adoption" data-lightbox="dogs" data-caption="Buddy: 2 years old, friendly and energetic">
                 <h3>Buddy</h3>
                 <p>Age: 2 years | Breed: Mixed | Friendly, energetic, great with kids.</p>
             </article>
 
             <article class="dog-card">
-                <img src="images/dog-luna.jpg" alt="Luna, a small black dog available for adoption">
+                <img src="images/dog-luna.jpg" alt="Luna, a small black dog available for adoption" data-lightbox="dogs" data-caption="Luna: 4 years old, calm and affectionate">
                 <h3>Luna</h3>
                 <p>Age: 4 years | Breed: Terrier mix | Calm, affectionate, loves cuddles.</p>
             </article>
 
             <article class="dog-card">
-                <img src="images/dog-max.jpg" alt="Max, a large dog available for adoption">
+                <img src="images/dog-max.jpg" alt="Max, a large dog available for adoption" data-lightbox="dogs" data-caption="Max: 1 year old, playful and needs an active home">
                 <h3>Max</h3>
                 <p>Age: 1 year | Breed: Labrador mix | Playful, needs an active home.</p>
             </article>
@@ -75,6 +77,59 @@
                 <li>Sign adoption agreement and pay adoption fee</li>
                 <li>Take your new companion home!</li>
             </ol>
+        </section>
+
+        <!-- FAQ accordion: click a question to open or close its answer (see js/script.js) -->
+        <section id="adoption-faq">
+            <h2>Adoption FAQs</h2>
+
+            <div class="accordion">
+
+                <div class="accordion-item">
+                    <h3>
+                        <button type="button" class="accordion-header" id="faq-btn-1" aria-expanded="false" aria-controls="faq-1">
+                            How much does it cost to adopt a dog?
+                        </button>
+                    </h3>
+                    <div class="accordion-panel" id="faq-1" role="region" aria-labelledby="faq-btn-1" hidden>
+                        <p>The adoption fee is R1,200. This covers sterilisation, vaccinations, deworming, and a microchip, so your new companion goes home fully protected.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3>
+                        <button type="button" class="accordion-header" id="faq-btn-2" aria-expanded="false" aria-controls="faq-2">
+                            How long does the adoption process take?
+                        </button>
+                    </h3>
+                    <div class="accordion-panel" id="faq-2" role="region" aria-labelledby="faq-btn-2" hidden>
+                        <p>Most adoptions take between three and seven days, depending on how quickly we can complete the meet-and-greet and the home suitability check.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3>
+                        <button type="button" class="accordion-header" id="faq-btn-3" aria-expanded="false" aria-controls="faq-3">
+                            Can I adopt if I already have other pets?
+                        </button>
+                    </h3>
+                    <div class="accordion-panel" id="faq-3" role="region" aria-labelledby="faq-btn-3" hidden>
+                        <p>Yes. We arrange a supervised meet-and-greet between your current pets and the dog you are interested in to make sure they get along before the adoption is finalised.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3>
+                        <button type="button" class="accordion-header" id="faq-btn-4" aria-expanded="false" aria-controls="faq-4">
+                            What if the adoption doesn't work out?
+                        </button>
+                    </h3>
+                    <div class="accordion-panel" id="faq-4" role="region" aria-labelledby="faq-btn-4" hidden>
+                        <p>We offer a 14-day settling-in period. If things aren't working, you can return the dog to us and we will help find a better match.</p>
+                    </div>
+                </div>
+
+            </div>
         </section>
 
     </main>

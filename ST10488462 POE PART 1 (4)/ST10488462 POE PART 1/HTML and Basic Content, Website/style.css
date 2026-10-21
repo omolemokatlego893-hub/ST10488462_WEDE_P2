@@ -498,3 +498,365 @@ button:focus-visible {
         text-align: center;
     }
 }
+
+
+/* =========================================================
+   PART 3 ADDITIONS: INTERACTIVE ELEMENTS
+   Styles for the features added with JavaScript (js/script.js):
+   13. Active navigation link
+   14. Scroll reveal animation
+   15. Back to top button
+   16. Accordion (FAQ)
+   17. Photo gallery
+   18. Lightbox viewer
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   13. ACTIVE NAVIGATION LINK
+   JavaScript adds the class "active" to the link of the page
+   the visitor is currently on.
+--------------------------------------------------------- */
+nav a.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+
+/* ---------------------------------------------------------
+   14. SCROLL REVEAL ANIMATION
+   Sections start slightly lower and see-through, then fade
+   up into place as they scroll into view. The ".js" class is
+   added by JavaScript, so visitors without JavaScript still
+   see all of the content.
+--------------------------------------------------------- */
+.js .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.js .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* ---------------------------------------------------------
+   15. BACK TO TOP BUTTON
+--------------------------------------------------------- */
+.back-to-top {
+    position: fixed;
+    right: var(--space-lg);
+    bottom: var(--space-lg);
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background-color: var(--color-primary-dark);
+}
+
+
+/* ---------------------------------------------------------
+   16. ACCORDION (FAQ)
+--------------------------------------------------------- */
+.accordion {
+    max-width: 700px;
+}
+
+.accordion-item {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    margin-bottom: var(--space-sm);
+    overflow: hidden;
+}
+
+/* The heading wrapping each button needs its default heading look removed */
+.accordion-item h3 {
+    margin: 0;
+    font-family: inherit;
+    font-size: var(--font-base);
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--space-md);
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: var(--font-base);
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.accordion-header:hover,
+.accordion-header:focus-visible {
+    background-color: var(--color-background);
+}
+
+/* The little plus sign that turns into a minus when the panel is open */
+.accordion-header::after {
+    content: "+";
+    margin-left: auto;
+    padding-left: var(--space-md);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--color-primary);
+    transition: transform 0.3s ease;
+}
+
+.accordion-header[aria-expanded="true"]::after {
+    content: "\2212"; /* minus sign */
+    transform: rotate(180deg);
+}
+
+.accordion-panel {
+    padding: 0 var(--space-md) var(--space-md);
+}
+
+.accordion-panel p {
+    margin-bottom: 0;
+}
+
+/* The answer slides down and fades in when it opens */
+.accordion-panel:not([hidden]) {
+    animation: panelOpen 0.35s ease;
+}
+
+@keyframes panelOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   17. PHOTO GALLERY
+   Flexbox layout: thumbnails sit side by side and wrap onto a
+   new row when there is no more room.
+--------------------------------------------------------- */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.gallery-item {
+    flex: 1 1 180px;
+    max-width: 260px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.06);
+}
+
+.gallery-item figcaption {
+    padding: var(--space-sm);
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+/* Any image that opens the lightbox shows a zoom cursor */
+img[data-lightbox] {
+    cursor: zoom-in;
+}
+
+img[data-lightbox]:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+
+/* ---------------------------------------------------------
+   18. LIGHTBOX VIEWER
+   A full-screen dark overlay created by JavaScript that shows
+   one image at a time with previous/next and close buttons.
+--------------------------------------------------------- */
+.lightbox {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    background-color: rgba(0, 0, 0, 0.88);
+    animation: lightboxFade 0.25s ease;
+}
+
+/* The "hidden" attribute must win over display: flex above */
+.lightbox[hidden] {
+    display: none;
+}
+
+@keyframes lightboxFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.lightbox-figure {
+    max-width: 90%;
+    text-align: center;
+}
+
+.lightbox-img {
+    max-width: 100%;
+    max-height: 75vh;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-caption {
+    margin-top: var(--space-md);
+    color: #ffffff;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.lightbox-close {
+    top: var(--space-md);
+    right: var(--space-md);
+}
+
+.lightbox-prev {
+    left: var(--space-md);
+    top: 50%;
+}
+
+.lightbox-next {
+    right: var(--space-md);
+    top: 50%;
+}
+
+/* Stops the page behind the lightbox from scrolling while it is open */
+body.no-scroll {
+    overflow: hidden;
+}
+
+
+/* ---------------------------------------------------------
+   PART 3 RESPONSIVE ADJUSTMENTS
+--------------------------------------------------------- */
+@media (max-width: 480px) {
+    .back-to-top {
+        right: var(--space-md);
+        bottom: var(--space-md);
+    }
+
+    .gallery-item {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .lightbox {
+        padding: var(--space-md);
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        top: auto;
+        bottom: var(--space-md);
+    }
+
+    .lightbox-prev {
+        left: 30%;
+    }
+
+    .lightbox-next {
+        right: 30%;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   Visitors who ask their device to limit animation get a
+   calmer version of the site with no sliding or fading.
+--------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .js .reveal,
+    .js .reveal.is-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .accordion-panel:not([hidden]),
+    .lightbox {
+        animation: none;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}

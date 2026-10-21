@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="style.css">
 
     <title>Paws Haven Animal Rescue | About Us</title>
+    <!-- Links the JavaScript file. 'defer' makes it run only after the whole page has loaded -->
+    <script src="js/script.js" defer></script>
 </head>
 <body>
 
@@ -72,7 +74,36 @@
                 who help with feeding, walking, and socialising the dogs in
                 our care.
             </p>
-            <img src="images/team-photo.jpg" alt="Paws Haven staff and volunteers with rescued dogs">
+            <img src="images/team-photo.jpg" alt="Paws Haven staff and volunteers with rescued dogs" data-lightbox="team" data-caption="Our staff and volunteers with some of the dogs in our care">
+        </section>
+
+        <!-- Photo gallery: click any photo to open it in the lightbox viewer (see js/script.js) -->
+        <section id="gallery">
+            <h2>Photo Gallery</h2>
+            <p>A few moments from life at Paws Haven. Click any photo to view it larger.</p>
+
+            <div class="gallery">
+                <figure class="gallery-item">
+                    <img src="images/hero-dog.jpg" alt="A happy white rescued dog smiling at the camera" data-lightbox="gallery" data-caption="A happy rescue dog enjoying life at Paws Haven">
+                    <figcaption>Happy rescue</figcaption>
+                </figure>
+                <figure class="gallery-item">
+                    <img src="images/team-photo.jpg" alt="Paws Haven volunteers petting a brown dog at the shelter" data-lightbox="gallery" data-caption="Our volunteers giving the dogs the attention they deserve">
+                    <figcaption>Our volunteers</figcaption>
+                </figure>
+                <figure class="gallery-item">
+                    <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog standing on grass" data-lightbox="gallery" data-caption="Buddy enjoying some time on the grass">
+                    <figcaption>Buddy</figcaption>
+                </figure>
+                <figure class="gallery-item">
+                    <img src="images/dog-luna.jpg" alt="Luna, a small scruffy terrier mix looking up at the camera" data-lightbox="gallery" data-caption="Luna, our calm and affectionate terrier mix">
+                    <figcaption>Luna</figcaption>
+                </figure>
+                <figure class="gallery-item">
+                    <img src="images/dog-max.jpg" alt="Max, a tan Labrador mix standing in front of green bushes" data-lightbox="gallery" data-caption="Max, a playful Labrador mix who loves to run">
+                    <figcaption>Max</figcaption>
+                </figure>
+            </div>
         </section>
 
     </main>
