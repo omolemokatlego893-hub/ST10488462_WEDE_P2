@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Photo coming soon">
+  <rect width="400" height="300" fill="#f1e7d8"/>
+  <g fill="#d97845">
+    <ellipse cx="200" cy="165" rx="48" ry="40"/>
+    <ellipse cx="140" cy="108" rx="19" ry="26" transform="rotate(-18 140 108)"/>
+    <ellipse cx="180" cy="86" rx="19" ry="27"/>
+    <ellipse cx="220" cy="86" rx="19" ry="27"/>
+    <ellipse cx="260" cy="108" rx="19" ry="26" transform="rotate(18 260 108)"/>
+  </g>
+  <text x="200" y="258" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#6b665f">Photo coming soon</text>
+</svg>

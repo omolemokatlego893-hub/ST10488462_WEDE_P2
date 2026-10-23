@@ -860,3 +860,249 @@ body.no-scroll {
         scroll-behavior: auto;
     }
 }
+
+
+/* =========================================================
+   PART 3 ADDITIONS: DOG DIRECTORY (SEARCH, FILTER, SORT, MODAL)
+   19. Search, filter and sort controls
+   20. Dog card details button
+   21. Dog details pop-up (modal)
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   19. SEARCH, FILTER AND SORT CONTROLS
+   Flexbox: the controls sit in a row and wrap on small screens.
+--------------------------------------------------------- */
+.dog-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: var(--space-md);
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 150px;
+}
+
+.control-group label {
+    margin-top: 0;
+    font-size: 0.9rem;
+}
+
+/* The search box is wider than the dropdowns */
+.control-wide {
+    flex: 2 1 260px;
+}
+
+.dog-controls input:focus,
+.dog-controls select:focus {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 1px;
+}
+
+.dog-controls input:disabled,
+.dog-controls select:disabled,
+.secondary-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.secondary-button {
+    font-family: inherit;
+    font-size: var(--font-base);
+    font-weight: 600;
+    background-color: transparent;
+    color: var(--color-primary-dark);
+    border: 2px solid var(--color-primary);
+    border-radius: 8px;
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.secondary-button:hover:not(:disabled),
+.secondary-button:focus-visible {
+    background-color: var(--color-primary);
+    color: #ffffff;
+}
+
+.dog-count {
+    margin-top: var(--space-md);
+    margin-bottom: 0;
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+}
+
+/* Message shown when no dog matches the search */
+.dog-empty {
+    flex: 1 1 100%;
+    text-align: center;
+    padding: var(--space-lg);
+    background-color: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    color: var(--color-text-light);
+}
+
+
+/* ---------------------------------------------------------
+   20. DOG CARD DETAILS BUTTON
+--------------------------------------------------------- */
+.details-button {
+    display: block;
+    width: calc(100% - (var(--space-md) * 2));
+    margin: 0 var(--space-md) var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    font-family: inherit;
+    font-size: var(--font-base);
+    font-weight: 600;
+    color: #ffffff;
+    background-color: var(--color-secondary);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.details-button:hover,
+.details-button:focus-visible {
+    background-color: #3a6247;
+    transform: translateY(-1px);
+}
+
+
+/* ---------------------------------------------------------
+   21. DOG DETAILS POP-UP (MODAL)
+--------------------------------------------------------- */
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow-y: auto;
+    animation: lightboxFade 0.25s ease;
+}
+
+/* The "hidden" attribute must win over display: flex above */
+.modal[hidden] {
+    display: none;
+}
+
+.modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    max-height: 100%;
+    overflow-y: auto;
+    background-color: var(--color-surface);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: modalPop 0.3s ease;
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+.modal-body {
+    padding: var(--space-lg);
+}
+
+.modal-body h2 {
+    margin-bottom: var(--space-sm);
+}
+
+.modal-facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.35rem var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.modal-facts dt {
+    font-weight: 600;
+}
+
+.modal-facts dd {
+    margin: 0;
+    color: var(--color-text-light);
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-close:hover,
+.modal-close:focus-visible {
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 480px) {
+    .modal-image {
+        height: 180px;
+    }
+
+    .modal-body {
+        padding: var(--space-md);
+    }
+
+    .modal-facts {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .modal-facts dd {
+        margin-bottom: var(--space-sm);
+    }
+
+    .dog-card {
+        max-width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal,
+    .modal-content {
+        animation: none;
+    }
+}

@@ -13,7 +13,9 @@
    4. Back to top button
    5. Accordion (FAQ)
    6. Lightbox image viewer
-   7. Start everything when the page has loaded
+   7. Dog directory: loads dogs from data/dogs.json, with search, filter and sort
+   8. Dog details pop-up (modal window)
+   9. Start everything when the page has loaded
    ========================================================= */
 
 'use strict';
@@ -169,8 +171,10 @@ function makeImagesFocusable(root) {
 }
 
 function initLightbox() {
-    // Only build the viewer if this page has images that need it
-    if (!document.querySelector('img[data-lightbox]')) {
+    // Only build the viewer if this page has images that need it. The adoption
+    // page counts too, because its dog photos are added later by JavaScript.
+    if (!document.querySelector('img[data-lightbox]') &&
+        !document.getElementById('dog-search-input')) {
         return;
     }
 
@@ -303,7 +307,293 @@ function initLightbox() {
 
 
 /* ---------------------------------------------------------
-   7. START EVERYTHING WHEN THE PAGE HAS LOADED
+   7. DOG DIRECTORY (dynamic content, search, filter and sort)
+   The dogs are not typed into the HTML. Instead, JavaScript asks
+   for the file data/dogs.json (an AJAX request using fetch), then
+   builds a card for every dog. The search box, the filters and the
+   sort menu rebuild the cards each time the visitor changes them.
+--------------------------------------------------------- */
+
+// Works out which age group a dog belongs to
+function getAgeGroup(dog) {
+    if (dog.age < 1) {
+        return 'puppy';
+    }
+    if (dog.age < 4) {
+        return 'young';
+    }
+    return 'adult';
+}
+
+// Builds one dog card (an <article>) from one dog's information
+function buildDogCard(dog, onDetailsClick) {
+    const card = createElement('article', 'dog-card');
+
+    const image = createElement('img', null, {
+        src: dog.image,
+        alt: dog.alt,
+        loading: 'lazy'
+    });
+
+    // Only real photos open in the lightbox; the placeholder picture does not
+    if (dog.photo) {
+        image.setAttribute('data-lightbox', 'dogs');
+        image.setAttribute('data-caption', dog.name + ': ' + dog.ageLabel + ' old, ' +
+            dog.temperament.charAt(0).toLowerCase() + dog.temperament.slice(1).replace(/\.$/, ''));
+    }
+
+    const name = createElement('h3');
+    name.textContent = dog.name;
+
+    const summary = createElement('p');
+    summary.textContent = 'Age: ' + dog.ageLabel + ' | Breed: ' + dog.breed +
+        ' | ' + dog.temperament;
+
+    const detailsButton = createElement('button', 'details-button', {
+        type: 'button',
+        'aria-label': 'View details for ' + dog.name
+    });
+    detailsButton.textContent = 'View details';
+    detailsButton.addEventListener('click', function () {
+        onDetailsClick(dog, detailsButton);
+    });
+
+    card.appendChild(image);
+    card.appendChild(name);
+    card.appendChild(summary);
+    card.appendChild(detailsButton);
+    return card;
+}
+
+function initDogDirectory() {
+    const list = document.getElementById('available-dogs');
+    const searchInput = document.getElementById('dog-search-input');
+
+    // Only run on the adoption page
+    if (!list || !searchInput) {
+        return;
+    }
+
+    const ageFilter = document.getElementById('dog-age-filter');
+    const sizeFilter = document.getElementById('dog-size-filter');
+    const sortMenu = document.getElementById('dog-sort');
+    const resetButton = document.getElementById('dog-reset');
+    const countMessage = document.getElementById('dog-count');
+    const controls = [searchInput, ageFilter, sizeFilter, sortMenu, resetButton];
+
+    const showDetails = initDogModal();
+    let allDogs = [];
+
+    // Works out which dogs to show, in which order, and redraws the cards
+    function updateList() {
+        // Split the search into words, so "lab large" must match both words
+        const words = searchInput.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+
+        const matches = allDogs.filter(function (dog) {
+            const searchableText = [dog.name, dog.breed, dog.size, dog.temperament, dog.ageLabel]
+                .join(' ').toLowerCase();
+
+            const matchesSearch = words.every(function (word) {
+                return searchableText.indexOf(word) !== -1;
+            });
+            const matchesAge = ageFilter.value === 'all' || getAgeGroup(dog) === ageFilter.value;
+            const matchesSize = sizeFilter.value === 'all' || dog.size === sizeFilter.value;
+
+            return matchesSearch && matchesAge && matchesSize;
+        });
+
+        // Sort the matching dogs (ties are broken by name)
+        matches.sort(function (a, b) {
+            const byName = a.name.localeCompare(b.name);
+
+            switch (sortMenu.value) {
+                case 'name-desc':
+                    return -byName;
+                case 'age-asc':
+                    return (a.age - b.age) || byName;
+                case 'age-desc':
+                    return (b.age - a.age) || byName;
+                default:
+                    return byName;
+            }
+        });
+
+        // Clear the old cards and draw the new ones
+        list.innerHTML = '';
+
+        if (matches.length === 0) {
+            const emptyMessage = createElement('p', 'dog-empty');
+            emptyMessage.textContent = 'No dogs match your search. Try a different word or clear the filters.';
+            list.appendChild(emptyMessage);
+        } else {
+            matches.forEach(function (dog) {
+                list.appendChild(buildDogCard(dog, showDetails));
+            });
+        }
+
+        makeImagesFocusable(list);
+        countMessage.textContent = 'Showing ' + matches.length + ' of ' + allDogs.length + ' dogs';
+    }
+
+    // Ask for the dog data (AJAX), then show the dogs
+    fetch('data/dogs.json')
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Could not load the dog data (status ' + response.status + ')');
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            allDogs = data.dogs;
+            updateList();
+
+            // Redraw the list whenever the visitor changes any control
+            searchInput.addEventListener('input', updateList);
+            ageFilter.addEventListener('change', updateList);
+            sizeFilter.addEventListener('change', updateList);
+            sortMenu.addEventListener('change', updateList);
+            resetButton.addEventListener('click', function () {
+                searchInput.value = '';
+                ageFilter.value = 'all';
+                sizeFilter.value = 'all';
+                sortMenu.value = 'name-asc';
+                updateList();
+                searchInput.focus();
+            });
+        })
+        .catch(function (error) {
+            // If the data cannot load, the three backup cards in the HTML stay
+            // on the page and the search tools are switched off.
+            console.error(error);
+            controls.forEach(function (control) {
+                control.disabled = true;
+            });
+            countMessage.textContent = 'The search tools are unavailable right now. Some of our dogs are shown below.';
+        });
+}
+
+
+/* ---------------------------------------------------------
+   8. DOG DETAILS POP-UP (modal window)
+   Clicking "View details" on a card opens a window with more
+   information about that dog. Returns a function that opens it.
+--------------------------------------------------------- */
+function initDogModal() {
+    // Build the pop-up piece by piece
+    const modal = createElement('div', 'modal', {
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-labelledby': 'modal-title',
+        hidden: ''
+    });
+    const content = createElement('div', 'modal-content');
+    const closeButton = createElement('button', 'modal-close', {
+        type: 'button',
+        'aria-label': 'Close dog details'
+    });
+    const image = createElement('img', 'modal-image');
+    const body = createElement('div', 'modal-body');
+    const title = createElement('h2', null, { id: 'modal-title' });
+    const story = createElement('p', 'modal-story');
+    const facts = createElement('dl', 'modal-facts');
+    const enquireLink = createElement('a', 'cta-button', { href: 'enquiry.html' });
+
+    closeButton.textContent = '\u00D7';
+
+    body.appendChild(title);
+    body.appendChild(story);
+    body.appendChild(facts);
+    body.appendChild(enquireLink);
+    content.appendChild(closeButton);
+    content.appendChild(image);
+    content.appendChild(body);
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    let triggerButton = null;
+
+    function openModal(dog, button) {
+        triggerButton = button;
+
+        image.src = dog.image;
+        image.alt = dog.alt;
+        title.textContent = dog.name;
+        story.textContent = dog.story;
+        enquireLink.textContent = 'Enquire about adopting ' + dog.name;
+
+        // Fill the list of facts (term + description pairs)
+        facts.innerHTML = '';
+        [
+            ['Age', dog.ageLabel],
+            ['Breed', dog.breed],
+            ['Size', dog.size],
+            ['Energy level', dog.energy],
+            ['Good with kids', dog.goodWithKids],
+            ['Good with other dogs', dog.goodWithDogs]
+        ].forEach(function (fact) {
+            const term = createElement('dt');
+            const description = createElement('dd');
+            term.textContent = fact[0];
+            description.textContent = fact[1];
+            facts.appendChild(term);
+            facts.appendChild(description);
+        });
+
+        modal.hidden = false;
+        document.body.classList.add('no-scroll');
+        closeButton.focus();
+    }
+
+    function closeModal() {
+        modal.hidden = true;
+        document.body.classList.remove('no-scroll');
+
+        // Return keyboard focus to the button that opened the pop-up
+        if (triggerButton) {
+            triggerButton.focus();
+        }
+    }
+
+    closeButton.addEventListener('click', closeModal);
+
+    // Clicking the dark area outside the window closes it
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (modal.hidden) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+
+        // Keep the Tab key inside the pop-up while it is open
+        if (event.key === 'Tab') {
+            const focusable = Array.from(modal.querySelectorAll('a[href], button'));
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        }
+    });
+
+    return openModal;
+}
+
+
+/* ---------------------------------------------------------
+   9. START EVERYTHING WHEN THE PAGE HAS LOADED
 --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
     // Tells the CSS that JavaScript is working (used by the reveal animation)
@@ -314,4 +604,5 @@ document.addEventListener('DOMContentLoaded', function () {
     initBackToTop();
     initAccordions();
     initLightbox();
+    initDogDirectory();
 });

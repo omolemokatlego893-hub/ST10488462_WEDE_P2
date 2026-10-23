@@ -44,7 +44,57 @@
             </p>
         </section>
 
-        <!-- Dog listings -->
+        <!-- Search, filter and sort tools: these control the dog list below (see js/script.js) -->
+        <section id="dog-search">
+            <h2>Find Your Match</h2>
+
+            <div class="dog-controls" role="search" aria-label="Search and filter dogs">
+
+                <div class="control-group control-wide">
+                    <label for="dog-search-input">Search</label>
+                    <input type="search" id="dog-search-input" placeholder="Search by name, breed or personality" autocomplete="off">
+                </div>
+
+                <div class="control-group">
+                    <label for="dog-age-filter">Age</label>
+                    <select id="dog-age-filter">
+                        <option value="all">All ages</option>
+                        <option value="puppy">Puppy (under 1 year)</option>
+                        <option value="young">Young (1 to 3 years)</option>
+                        <option value="adult">Adult (4 years and older)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="dog-size-filter">Size</label>
+                    <select id="dog-size-filter">
+                        <option value="all">All sizes</option>
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="dog-sort">Sort by</label>
+                    <select id="dog-sort">
+                        <option value="name-asc">Name (A to Z)</option>
+                        <option value="name-desc">Name (Z to A)</option>
+                        <option value="age-asc">Youngest first</option>
+                        <option value="age-desc">Oldest first</option>
+                    </select>
+                </div>
+
+                <button type="button" id="dog-reset" class="secondary-button">Clear filters</button>
+
+            </div>
+
+            <!-- aria-live makes screen readers announce the new count whenever it changes -->
+            <p id="dog-count" class="dog-count" aria-live="polite"></p>
+        </section>
+
+        <!-- Dog listings: JavaScript loads the dogs from data/dogs.json and rebuilds these cards.
+             The three cards below are kept as a backup in case the data file cannot be loaded. -->
         <section id="available-dogs">
 
             <article class="dog-card">
