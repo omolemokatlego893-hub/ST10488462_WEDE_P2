@@ -18,7 +18,8 @@
    9. Form helpers: checking what the visitor typed
    10. Interactive map (contact page)
    11. Contact form: checking, then building an email
-   12. Start everything when the page has loaded
+   12. Enquiry form: checking, sending with AJAX, and showing a response
+   13. Start everything when the page has loaded
    ========================================================= */
 
 'use strict';
@@ -1047,7 +1048,400 @@ function initContactForm() {
 
 
 /* ---------------------------------------------------------
-   12. START EVERYTHING WHEN THE PAGE HAS LOADED
+   12. ENQUIRY FORM: CHECKING, SENDING WITH AJAX, SHOWING A RESPONSE
+   1. Extra questions appear depending on what the visitor is
+      interested in (volunteering, sponsoring or both).
+   2. Every field is checked, with a clear message for each problem.
+   3. The enquiry is sent in the background with fetch (AJAX), so the
+      page never reloads.
+   4. A personal response then appears, with the cost and availability
+      that match what the visitor asked about.
+--------------------------------------------------------- */
+
+// The address the enquiry is sent to. This is JSONPlaceholder, a free test
+// service that accepts any data and replies as a real server would. To send
+// enquiries to a real inbox, replace this address with a form service address
+// (for example one from Formspree) and the rest of the code stays the same.
+const ENQUIRY_ENDPOINT = 'https://jsonplaceholder.typicode.com/posts';
+
+// Works out the date of our next volunteer orientation: the first
+// Saturday of the month (always at 10:00), starting from the given day.
+function getNextOrientationDate(fromDate) {
+    function firstSaturdayOf(year, month) {
+        const firstOfMonth = new Date(year, month, 1);
+        // getDay(): Sunday is 0 ... Saturday is 6
+        const daysUntilSaturday = (6 - firstOfMonth.getDay() + 7) % 7;
+        return new Date(year, month, 1 + daysUntilSaturday);
+    }
+
+    const today = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
+    let next = firstSaturdayOf(today.getFullYear(), today.getMonth());
+
+    // If this month's session is today or already over, use next month's
+    if (next <= today) {
+        next = firstSaturdayOf(today.getFullYear(), today.getMonth() + 1);
+    }
+    return next;
+}
+
+// Turns the visitor's answers into the facts shown in the response.
+// Returns a list of blocks, each with a heading and label/value pairs.
+function buildEnquiryResponse(details, orientationDate) {
+    const blocks = [];
+    const wantsVolunteer = details.interest === 'volunteer' || details.interest === 'both';
+    const wantsSponsor = details.interest === 'sponsor' || details.interest === 'both';
+
+    if (wantsVolunteer) {
+        const dateText = orientationDate.toLocaleDateString('en-ZA', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        blocks.push({
+            heading: 'Volunteering',
+            facts: [
+                ['Cost', 'Free. Volunteering costs you nothing, and we provide everything you need on the day.'],
+                ['Next orientation', dateText + ' at 10:00 at our Pretoria shelter.'],
+                ['Shifts', 'Monday to Saturday, 9am to 4pm. We ask for at least 4 hours a week.'],
+                ['Your availability', details.availability.join(', ')]
+            ]
+        });
+    }
+
+    if (wantsSponsor) {
+        const isMonthly = details.sponsorPlan === 'monthly';
+
+        blocks.push({
+            heading: 'Sponsoring a dog',
+            facts: [
+                ['Cost', isMonthly
+                    ? 'R350 per month, which covers food and routine care for one dog. You can cancel at any time.'
+                    : 'R1,200 once-off, which covers sterilisation, vaccinations and a microchip for one dog.'],
+                ['Availability', details.sponsorDog
+                    ? details.sponsorDog + ' is currently looking for a sponsor.'
+                    : 'We will match you with a dog that currently needs a sponsor.'],
+                ['What you receive', 'A photo and health update about your dog every month.']
+            ]
+        });
+    }
+
+    return blocks;
+}
+
+// Makes a reference number such as PH-20261023-4821
+function makeReferenceNumber(date) {
+    const pad = function (number) {
+        return String(number).padStart(2, '0');
+    };
+    const datePart = date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
+    const randomPart = String(Math.floor(1000 + Math.random() * 9000));
+    return 'PH-' + datePart + '-' + randomPart;
+}
+
+function initEnquiryForm() {
+    const form = document.getElementById('enquiry-form-element');
+
+    // Only run on the enquiry page
+    if (!form) {
+        return;
+    }
+
+    const nameInput = document.getElementById('fullname');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const typeSelect = document.getElementById('enquiry-type');
+    const volunteerBox = document.getElementById('volunteer-options');
+    const availabilityBoxes = form.querySelectorAll('input[name="availability"]');
+    const availabilityGroup = volunteerBox.querySelector('fieldset');
+    const sponsorBox = document.getElementById('sponsor-options');
+    const sponsorDogSelect = document.getElementById('sponsor-dog');
+    const planRadios = form.querySelectorAll('input[name="sponsor-plan"]');
+    const planGroup = sponsorBox.querySelector('fieldset');
+    const messageInput = document.getElementById('message');
+    const messageCount = document.getElementById('message-count');
+    const consentBox = document.getElementById('enquiry-consent');
+    const summary = document.getElementById('enquiry-summary');
+    const submitButton = document.getElementById('enquiry-submit');
+    const status = document.getElementById('enquiry-status');
+    const MIN_MESSAGE_LENGTH = 20;
+
+    // ----- Helpers that read the current answers -----
+    function wantsVolunteer() {
+        return typeSelect.value === 'volunteer' || typeSelect.value === 'both';
+    }
+
+    function wantsSponsor() {
+        return typeSelect.value === 'sponsor' || typeSelect.value === 'both';
+    }
+
+    function getChosenAvailability() {
+        return Array.from(availabilityBoxes)
+            .filter(function (box) { return box.checked; })
+            .map(function (box) { return box.value; });
+    }
+
+    function getChosenPlan() {
+        const chosen = form.querySelector('input[name="sponsor-plan"]:checked');
+        return chosen ? chosen.value : '';
+    }
+
+    // ----- Fill the "which dog" menu from the same data file as the adoption page -----
+    fetch('data/dogs.json')
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Could not load the dog data');
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            // List the dogs A to Z, the same default order as the adoption page
+            data.dogs.slice().sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            }).forEach(function (dog) {
+                const option = createElement('option', null, { value: dog.name });
+                option.textContent = dog.name + ' (' + dog.ageLabel + ', ' + dog.breed + ')';
+                sponsorDogSelect.appendChild(option);
+            });
+        })
+        .catch(function (error) {
+            // The menu simply keeps its "No preference" choice
+            console.error(error);
+        });
+
+    // ----- The checks. "isActive" skips questions that are not showing. -----
+    const checks = [
+        { field: nameInput, errorId: 'fullname-error', focusOn: nameInput,
+          check: function () { return validateName(nameInput.value); } },
+        { field: emailInput, errorId: 'email-error', focusOn: emailInput,
+          check: function () { return validateEmail(emailInput.value); } },
+        { field: phoneInput, errorId: 'phone-error', focusOn: phoneInput,
+          check: function () { return validatePhone(phoneInput.value, false); } },
+        { field: typeSelect, errorId: 'enquiry-type-error', focusOn: typeSelect,
+          check: function () { return typeSelect.value === '' ? 'Please choose what you are interested in.' : ''; } },
+        { field: availabilityGroup, errorId: 'availability-error', focusOn: availabilityBoxes[0],
+          isActive: wantsVolunteer,
+          check: function () { return getChosenAvailability().length === 0 ? 'Please choose at least one time that suits you.' : ''; } },
+        { field: planGroup, errorId: 'sponsor-plan-error', focusOn: planRadios[0],
+          isActive: wantsSponsor,
+          check: function () { return getChosenPlan() === '' ? 'Please choose how you would like to sponsor.' : ''; } },
+        { field: messageInput, errorId: 'message-error', focusOn: messageInput,
+          check: function () { return validateMessage(messageInput.value, MIN_MESSAGE_LENGTH); } },
+        { field: consentBox, errorId: 'enquiry-consent-error', focusOn: consentBox,
+          check: function () { return consentBox.checked ? '' : 'Please tick the box to confirm that we may contact you.'; } }
+    ];
+
+    // Runs one check. Returns true when the field is fine (or not showing).
+    function runCheck(item) {
+        if (item.isActive && !item.isActive()) {
+            setFieldError(item.field, item.errorId, '');
+            return true;
+        }
+        const message = item.check();
+        setFieldError(item.field, item.errorId, message);
+        return message === '';
+    }
+
+    // Check each field when the visitor leaves it, and keep re-checking
+    // while they fix a field that is already showing an error.
+    checks.forEach(function (item) {
+        let controls = [item.field];
+        if (item.field === availabilityGroup) {
+            controls = availabilityBoxes;
+        } else if (item.field === planGroup) {
+            controls = planRadios;
+        }
+
+        controls.forEach(function (control) {
+            const isChoice = control.matches('select, input[type="radio"], input[type="checkbox"]');
+
+            if (isChoice) {
+                control.addEventListener('change', function () {
+                    runCheck(item);
+                });
+            } else {
+                control.addEventListener('blur', function () {
+                    runCheck(item);
+                });
+                control.addEventListener('input', function () {
+                    if (item.field.classList.contains('invalid')) {
+                        runCheck(item);
+                    }
+                });
+            }
+        });
+    });
+
+    // Show only the extra questions that match what the visitor chose
+    typeSelect.addEventListener('change', function () {
+        volunteerBox.hidden = !wantsVolunteer();
+        sponsorBox.hidden = !wantsSponsor();
+
+        // Clear any old errors from questions that just disappeared
+        checks.forEach(function (item) {
+            if (item.isActive && !item.isActive()) {
+                runCheck(item);
+            }
+        });
+    });
+
+    messageInput.addEventListener('input', function () {
+        messageCount.textContent = messageInput.value.length + ' / ' + messageInput.maxLength + ' characters';
+    });
+
+    // ----- The response panel (built once, hidden until needed) -----
+    const formSection = document.getElementById('enquiry-form');
+    const response = createElement('div', 'enquiry-response', { hidden: '' });
+    const responseHeading = createElement('h3', null, { tabindex: '-1' });
+    const responseIntro = createElement('p');
+    const responseBlocks = createElement('div', 'response-blocks');
+    const responseNext = createElement('p');
+    const newEnquiryButton = createElement('button', 'secondary-button', { type: 'button' });
+
+    newEnquiryButton.textContent = 'Make another enquiry';
+    response.appendChild(responseHeading);
+    response.appendChild(responseIntro);
+    response.appendChild(responseBlocks);
+    response.appendChild(responseNext);
+    response.appendChild(newEnquiryButton);
+    formSection.appendChild(response);
+
+    newEnquiryButton.addEventListener('click', function () {
+        form.reset();
+        volunteerBox.hidden = true;
+        sponsorBox.hidden = true;
+        messageCount.textContent = '0 / ' + messageInput.maxLength + ' characters';
+        checks.forEach(function (item) {
+            setFieldError(item.field, item.errorId, '');
+        });
+        status.textContent = '';
+        status.classList.remove('error');
+        response.hidden = true;
+        form.hidden = false;
+        nameInput.focus();
+    });
+
+    // Fills the response panel with the personal response
+    function showResponse(details) {
+        const now = new Date();
+        const firstName = details.name.split(/\s+/)[0];
+
+        responseHeading.textContent = 'Thank you, ' + firstName + '!';
+        // The reference number sits in its own bold element so it never splits across two lines
+        const reference = createElement('strong', 'reference-number');
+        reference.textContent = makeReferenceNumber(now);
+        responseIntro.textContent = 'We have received your enquiry. Your reference number is ';
+        responseIntro.appendChild(reference);
+        responseIntro.appendChild(document.createTextNode('.'));
+
+        responseBlocks.innerHTML = '';
+        buildEnquiryResponse(details, getNextOrientationDate(now)).forEach(function (block) {
+            const card = createElement('div', 'response-card');
+            const heading = createElement('h4');
+            const facts = createElement('dl', 'response-facts');
+
+            heading.textContent = block.heading;
+            block.facts.forEach(function (fact) {
+                const term = createElement('dt');
+                const description = createElement('dd');
+                term.textContent = fact[0];
+                description.textContent = fact[1];
+                facts.appendChild(term);
+                facts.appendChild(description);
+            });
+
+            card.appendChild(heading);
+            card.appendChild(facts);
+            responseBlocks.appendChild(card);
+        });
+
+        responseNext.textContent = 'Our team will email you at ' + details.email +
+            ' within 2 working days with the next steps. No payment is taken on this page.';
+
+        form.hidden = true;
+        response.hidden = false;
+        responseHeading.focus();
+    }
+
+    // ----- What happens when the visitor presses "Submit Enquiry" -----
+    form.addEventListener('submit', function (event) {
+        // Stop the browser from reloading the page
+        event.preventDefault();
+
+        // Run every check (not just the first one that fails)
+        const failed = checks.filter(function (item) {
+            return !runCheck(item);
+        });
+
+        if (failed.length > 0) {
+            summary.textContent = failed.length === 1
+                ? 'Please fix the 1 highlighted field below.'
+                : 'Please fix the ' + failed.length + ' highlighted fields below.';
+            summary.hidden = false;
+            failed[0].focusOn.focus();
+            return;
+        }
+
+        summary.hidden = true;
+
+        // Collect the answers into one object
+        const details = {
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            phone: phoneInput.value.trim(),
+            interest: typeSelect.value,
+            availability: wantsVolunteer() ? getChosenAvailability() : [],
+            sponsorDog: wantsSponsor() ? sponsorDogSelect.value : '',
+            sponsorPlan: wantsSponsor() ? getChosenPlan() : '',
+            message: messageInput.value.trim()
+        };
+
+        // Show that something is happening, and stop double-clicks
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+        status.classList.remove('error');
+        status.textContent = 'Sending your enquiry...';
+
+        // Give up after 10 seconds instead of waiting forever
+        const controller = new AbortController();
+        const timer = setTimeout(function () {
+            controller.abort();
+        }, 10000);
+
+        // The AJAX request: send the answers to the server in the background
+        fetch(ENQUIRY_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(details),
+            signal: controller.signal
+        })
+            .then(function (serverReply) {
+                if (!serverReply.ok) {
+                    throw new Error('The server replied with status ' + serverReply.status);
+                }
+                return serverReply.json();
+            })
+            .then(function () {
+                status.textContent = '';
+                showResponse(details);
+            })
+            .catch(function (error) {
+                console.error(error);
+                status.classList.add('error');
+                status.textContent = 'Sorry, we could not send your enquiry just now. Please check your internet connection and try again, or email info@pawshaven.org.';
+            })
+            .finally(function () {
+                clearTimeout(timer);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Enquiry';
+            });
+    });
+}
+
+
+/* ---------------------------------------------------------
+   13. START EVERYTHING WHEN THE PAGE HAS LOADED
 --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
     // Tells the CSS that JavaScript is working (used by the reveal animation)
@@ -1061,4 +1455,5 @@ document.addEventListener('DOMContentLoaded', function () {
     initDogDirectory();
     initMap();
     initContactForm();
+    initEnquiryForm();
 });
