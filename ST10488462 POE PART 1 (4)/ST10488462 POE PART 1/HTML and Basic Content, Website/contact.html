@@ -11,6 +11,13 @@
     <link rel="stylesheet" href="style.css">
 
     <title>Paws Haven Animal Rescue | Contact</title>
+    <!-- Leaflet: a free, open-source library for interactive maps (loaded only on this page).
+         The integrity values make the browser check the files have not been tampered with. -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+
     <!-- Links the JavaScript file. 'defer' makes it run only after the whole page has loaded -->
     <script src="js/script.js" defer></script>
 </head>
@@ -35,45 +42,104 @@
 
         <section id="contact-details">
             <h2>Get in Touch</h2>
-            <p>Email: info@pawshaven.org</p>
+            <p>Email: <a href="mailto:info@pawshaven.org">info@pawshaven.org</a></p>
             <p>Phone: 012 345 6789</p>
             <p>Opening Hours: Monday - Saturday, 9am - 4pm</p>
         </section>
 
-        <!-- Two shelter locations, as required by the brief -->
+        <!-- Two shelter locations, shown on one interactive map (Leaflet, see js/script.js) -->
         <section id="our-locations">
             <h2>Our Locations</h2>
+            <p>Visit us at either of our two sites. Choose a location to see it on the map.</p>
 
-            <h3>Main Shelter - Pretoria</h3>
-            <iframe
-                src="https://www.google.com/maps?q=Pretoria,South+Africa&output=embed"
-                width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-                title="Map showing Paws Haven main shelter location in Pretoria">
-            </iframe>
+            <div class="location-cards">
 
-            <h3>Satellite Adoption Centre - Centurion</h3>
-            <iframe
-                src="https://www.google.com/maps?q=Centurion,South+Africa&output=embed"
-                width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-                title="Map showing Paws Haven satellite adoption centre location in Centurion">
-            </iframe>
+                <article class="location-card">
+                    <h3>Main Shelter - Pretoria</h3>
+                    <p>Our main shelter, where every rescued dog is first assessed, treated and cared for.</p>
+                    <p>Open Monday - Saturday, 9am - 4pm</p>
+                    <div class="location-actions">
+                        <button type="button" class="secondary-button map-button" data-location="pretoria" aria-pressed="false">Show on map</button>
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;destination=-25.7479,28.2293" target="_blank" rel="noopener noreferrer">Get directions</a>
+                    </div>
+                </article>
+
+                <article class="location-card">
+                    <h3>Satellite Adoption Centre - Centurion</h3>
+                    <p>Our adoption centre, where you can meet dogs ready for their forever homes.</p>
+                    <p>Open Monday - Saturday, 9am - 4pm</p>
+                    <div class="location-actions">
+                        <button type="button" class="secondary-button map-button" data-location="centurion" aria-pressed="false">Show on map</button>
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;destination=-25.8603,28.1894" target="_blank" rel="noopener noreferrer">Get directions</a>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- Leaflet draws the map inside this box -->
+            <div id="map" role="region" aria-label="Interactive map showing both Paws Haven locations">
+                <noscript>The interactive map needs JavaScript. Please use the "Get directions" links above to see our locations on Google Maps.</noscript>
+            </div>
+            <p id="map-status" class="map-status" aria-live="polite"></p>
         </section>
 
-        <!-- Contact form -->
+        <!-- Contact form: checked by JavaScript, then turned into an email (see js/script.js).
+             "novalidate" switches off the browser's own pop-up messages so our friendlier messages show instead. -->
         <section id="contact-form">
             <h2>Send Us a Message</h2>
-            <form action="#" method="post">
+            <p>Fill in the form and we will prepare an email to our team for you to send.</p>
+
+            <form id="contact-form-element" action="#" method="post" novalidate>
+
+                <p id="form-summary" class="form-summary" role="alert" hidden></p>
 
                 <label for="cf-name">Full Name:</label>
-                <input type="text" id="cf-name" name="cf-name" required>
+                <input type="text" id="cf-name" name="cf-name" autocomplete="name" aria-describedby="cf-name-error" required>
+                <span class="error-message" id="cf-name-error"></span>
 
                 <label for="cf-email">Email Address:</label>
-                <input type="email" id="cf-email" name="cf-email" required>
+                <input type="email" id="cf-email" name="cf-email" autocomplete="email" aria-describedby="cf-email-error" required>
+                <span class="error-message" id="cf-email-error"></span>
+
+                <label for="cf-phone">Phone Number (optional):</label>
+                <input type="tel" id="cf-phone" name="cf-phone" autocomplete="tel" placeholder="e.g. 012 345 6789" aria-describedby="cf-phone-error">
+                <span class="error-message" id="cf-phone-error"></span>
+
+                <fieldset aria-describedby="cf-contact-method-error">
+                    <legend>How should we reply?</legend>
+                    <label class="choice"><input type="radio" name="cf-contact-method" value="Email"> Email</label>
+                    <label class="choice"><input type="radio" name="cf-contact-method" value="Phone"> Phone</label>
+                </fieldset>
+                <span class="error-message" id="cf-contact-method-error"></span>
+
+                <label for="cf-reason">What is your message about?</label>
+                <select id="cf-reason" name="cf-reason" aria-describedby="cf-reason-error" required>
+                    <option value="">Please choose...</option>
+                    <option value="General question">General question</option>
+                    <option value="Adopting a dog">Adopting a dog</option>
+                    <option value="Volunteering">Volunteering</option>
+                    <option value="Sponsoring a dog">Sponsoring a dog</option>
+                    <option value="Reporting a stray dog">Reporting a stray dog</option>
+                    <option value="Something else">Something else</option>
+                </select>
+                <span class="error-message" id="cf-reason-error"></span>
 
                 <label for="cf-message">Message:</label>
-                <textarea id="cf-message" name="cf-message" rows="5" required></textarea>
+                <textarea id="cf-message" name="cf-message" rows="5" maxlength="1000" aria-describedby="cf-message-error cf-message-count" required></textarea>
+                <span class="char-count" id="cf-message-count">0 / 1000 characters</span>
+                <span class="error-message" id="cf-message-error"></span>
 
-                <button type="submit">Send Message</button>
+                <label class="choice">
+                    <input type="checkbox" id="cf-updates" name="cf-updates" value="Yes"> Send me news and updates about Paws Haven
+                </label>
+
+                <label class="choice">
+                    <input type="checkbox" id="cf-consent" name="cf-consent" value="Yes" aria-describedby="cf-consent-error" required>
+                    I agree that Paws Haven may contact me about this message.
+                </label>
+                <span class="error-message" id="cf-consent-error"></span>
+
+                <button type="submit">Prepare My Email</button>
 
             </form>
         </section>

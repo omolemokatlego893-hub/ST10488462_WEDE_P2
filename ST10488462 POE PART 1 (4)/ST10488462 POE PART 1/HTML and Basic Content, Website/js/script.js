@@ -15,7 +15,10 @@
    6. Lightbox image viewer
    7. Dog directory: loads dogs from data/dogs.json, with search, filter and sort
    8. Dog details pop-up (modal window)
-   9. Start everything when the page has loaded
+   9. Form helpers: checking what the visitor typed
+   10. Interactive map (contact page)
+   11. Contact form: checking, then building an email
+   12. Start everything when the page has loaded
    ========================================================= */
 
 'use strict';
@@ -593,7 +596,458 @@ function initDogModal() {
 
 
 /* ---------------------------------------------------------
-   9. START EVERYTHING WHEN THE PAGE HAS LOADED
+   9. FORM HELPERS: CHECKING WHAT THE VISITOR TYPED
+   Small reusable functions. Each "validate" function returns an
+   error message to show, or an empty string when the value is fine.
+--------------------------------------------------------- */
+
+function validateName(value) {
+    const name = value.trim();
+
+    if (name === '') {
+        return 'Please enter your full name.';
+    }
+    if (name.length < 2) {
+        return 'Your name must be at least 2 characters long.';
+    }
+    // Letters (including accented ones), spaces, hyphens and apostrophes only
+    if (!/^\p{L}[\p{L}' -]*$/u.test(name)) {
+        return 'Your name can only contain letters, spaces, hyphens and apostrophes.';
+    }
+    return '';
+}
+
+function validateEmail(value) {
+    const email = value.trim();
+
+    if (email === '') {
+        return 'Please enter your email address.';
+    }
+    // Pattern: something, then @, then something, then a dot and an ending
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        return 'Please enter a valid email address, like name@example.com.';
+    }
+    return '';
+}
+
+function validatePhone(value, isRequired) {
+    const phone = value.trim();
+
+    if (phone === '') {
+        return isRequired ? 'Please enter your phone number so that we can call you.' : '';
+    }
+    // Remove spaces, brackets and dashes, then expect 0 or +27 followed by 9 digits
+    const digitsOnly = phone.replace(/[\s()-]/g, '');
+    if (!/^(\+27|0)\d{9}$/.test(digitsOnly)) {
+        return 'Please enter a valid South African number, like 012 345 6789 or +27 12 345 6789.';
+    }
+    return '';
+}
+
+function validateMessage(value, minimumLength) {
+    const message = value.trim();
+
+    if (message === '') {
+        return 'Please enter your message.';
+    }
+    if (message.length < minimumLength) {
+        return 'Your message must be at least ' + minimumLength + ' characters long (you have ' +
+            message.length + ').';
+    }
+    return '';
+}
+
+// Shows (or clears) an error message under a form field and styles the field red
+function setFieldError(field, errorId, message) {
+    const errorBox = document.getElementById(errorId);
+    errorBox.textContent = message;
+
+    field.classList.toggle('invalid', message !== '');
+
+    // Tells screen readers that this field has a problem (not used on fieldsets)
+    if (field.matches('input, select, textarea')) {
+        field.setAttribute('aria-invalid', message !== '' ? 'true' : 'false');
+    }
+}
+
+// Copies text to the clipboard, with a backup method for older browsers
+function copyTextToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise(function (resolve, reject) {
+        const helper = createElement('textarea', null, { 'aria-hidden': 'true' });
+        helper.value = text;
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+
+        const worked = document.execCommand('copy');
+        document.body.removeChild(helper);
+
+        if (worked) {
+            resolve();
+        } else {
+            reject(new Error('Copy failed'));
+        }
+    });
+}
+
+
+/* ---------------------------------------------------------
+   10. INTERACTIVE MAP (contact page)
+   Uses Leaflet, a free map library loaded in contact.html, with
+   map pictures from OpenStreetMap. Both shelters get a marker with a
+   pop-up, and the buttons fly the map to the chosen location.
+--------------------------------------------------------- */
+function initMap() {
+    const mapBox = document.getElementById('map');
+
+    // Only run on the contact page
+    if (!mapBox) {
+        return;
+    }
+
+    const status = document.getElementById('map-status');
+
+    // If the Leaflet library did not load (for example, no internet), say so
+    // politely. The "Get directions" links still work without it.
+    if (typeof L === 'undefined') {
+        status.textContent = 'The interactive map could not be loaded. Please use the "Get directions" links to see our locations on Google Maps.';
+        return;
+    }
+
+    const locations = {
+        pretoria: {
+            name: 'Main Shelter - Pretoria',
+            coordinates: [-25.7479, 28.2293],
+            description: 'Our main shelter, open Monday - Saturday, 9am - 4pm.'
+        },
+        centurion: {
+            name: 'Satellite Adoption Centre - Centurion',
+            coordinates: [-25.8603, 28.1894],
+            description: 'Meet dogs ready for adoption, Monday - Saturday, 9am - 4pm.'
+        }
+    };
+
+    // Create the map. Scroll-wheel zoom stays off until the map is clicked,
+    // so visitors do not get stuck zooming when they just scroll the page.
+    const map = L.map(mapBox, { scrollWheelZoom: false });
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    map.on('focus', function () {
+        map.scrollWheelZoom.enable();
+    });
+    map.on('blur', function () {
+        map.scrollWheelZoom.disable();
+    });
+
+    // Add one marker per location, each with a pop-up built from the information above
+    const markers = {};
+    const allCoordinates = [];
+
+    Object.keys(locations).forEach(function (key) {
+        const place = locations[key];
+
+        const popup = createElement('div');
+        const heading = createElement('strong');
+        const text = createElement('p');
+        const directions = createElement('a', null, {
+            href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.coordinates.join(','),
+            target: '_blank',
+            rel: 'noopener noreferrer'
+        });
+
+        heading.textContent = place.name;
+        text.textContent = place.description;
+        directions.textContent = 'Get directions';
+        popup.appendChild(heading);
+        popup.appendChild(text);
+        popup.appendChild(directions);
+
+        markers[key] = L.marker(place.coordinates, { title: place.name, alt: place.name })
+            .addTo(map)
+            .bindPopup(popup);
+
+        allCoordinates.push(place.coordinates);
+    });
+
+    // A "show both" button so visitors can zoom back out
+    const showBothButton = createElement('button', 'secondary-button map-button map-both-button', {
+        type: 'button'
+    });
+    showBothButton.textContent = 'Show both locations';
+    mapBox.parentNode.insertBefore(showBothButton, mapBox);
+
+    const locationButtons = document.querySelectorAll('.map-button[data-location]');
+
+    function showBoth() {
+        map.closePopup();
+        map.fitBounds(allCoordinates, { padding: [50, 50] });
+        locationButtons.forEach(function (button) {
+            button.setAttribute('aria-pressed', 'false');
+        });
+        status.textContent = 'Showing both of our locations on the map.';
+    }
+
+    function showLocation(key) {
+        const place = locations[key];
+
+        map.flyTo(place.coordinates, 14);
+        markers[key].openPopup();
+
+        locationButtons.forEach(function (button) {
+            button.setAttribute('aria-pressed', String(button.dataset.location === key));
+        });
+        status.textContent = 'Showing ' + place.name + ' on the map.';
+    }
+
+    locationButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            showLocation(button.dataset.location);
+        });
+    });
+    showBothButton.addEventListener('click', showBoth);
+
+    // Start with both locations in view
+    map.fitBounds(allCoordinates, { padding: [50, 50] });
+}
+
+
+/* ---------------------------------------------------------
+   11. CONTACT FORM: CHECKING, THEN BUILDING AN EMAIL
+   1. Each field is checked when the visitor leaves it, and again
+      for every field when they press the button.
+   2. If everything is correct, the details are put together into
+      an email addressed to Paws Haven.
+   3. The visitor reviews the email, then opens it in their email
+      app (or copies it) to send it.
+--------------------------------------------------------- */
+const CONTACT_EMAIL = 'info@pawshaven.org';
+
+// Puts the visitor's answers together into an email
+function buildContactEmail(details) {
+    const subject = 'Website enquiry: ' + details.reason + ' - ' + details.name;
+
+    const body = [
+        'Hello Paws Haven team,',
+        '',
+        'Name: ' + details.name,
+        'Email: ' + details.email,
+        'Phone: ' + (details.phone || 'Not provided'),
+        'Preferred way to reply: ' + details.method,
+        'Reason for contacting you: ' + details.reason,
+        '',
+        'Message:',
+        details.message,
+        '',
+        'Send me news and updates: ' + (details.updates ? 'Yes' : 'No')
+    ].join('\n');
+
+    // encodeURIComponent makes the text safe to place inside a link.
+    // Email links use \r\n for a new line.
+    const mailtoLink = 'mailto:' + CONTACT_EMAIL +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body).replace(/%0A/g, '%0D%0A');
+
+    return { to: CONTACT_EMAIL, subject: subject, body: body, mailto: mailtoLink };
+}
+
+function initContactForm() {
+    const form = document.getElementById('contact-form-element');
+
+    // Only run on the contact page
+    if (!form) {
+        return;
+    }
+
+    const nameInput = document.getElementById('cf-name');
+    const emailInput = document.getElementById('cf-email');
+    const phoneInput = document.getElementById('cf-phone');
+    const methodGroup = form.querySelector('fieldset');
+    const methodRadios = form.querySelectorAll('input[name="cf-contact-method"]');
+    const reasonSelect = document.getElementById('cf-reason');
+    const messageInput = document.getElementById('cf-message');
+    const messageCount = document.getElementById('cf-message-count');
+    const updatesBox = document.getElementById('cf-updates');
+    const consentBox = document.getElementById('cf-consent');
+    const summary = document.getElementById('form-summary');
+    const MIN_MESSAGE_LENGTH = 10;
+
+    function getSelectedMethod() {
+        const chosen = form.querySelector('input[name="cf-contact-method"]:checked');
+        return chosen ? chosen.value : '';
+    }
+
+    // One entry per field: the element to mark, where its error appears,
+    // and a function that returns the error message (or '' if fine).
+    const checks = [
+        { field: nameInput, errorId: 'cf-name-error', focusOn: nameInput,
+          check: function () { return validateName(nameInput.value); } },
+        { field: emailInput, errorId: 'cf-email-error', focusOn: emailInput,
+          check: function () { return validateEmail(emailInput.value); } },
+        // The phone number is optional, unless they asked us to reply by phone
+        { field: phoneInput, errorId: 'cf-phone-error', focusOn: phoneInput,
+          check: function () { return validatePhone(phoneInput.value, getSelectedMethod() === 'Phone'); } },
+        { field: methodGroup, errorId: 'cf-contact-method-error', focusOn: methodRadios[0],
+          check: function () { return getSelectedMethod() === '' ? 'Please choose how we should reply to you.' : ''; } },
+        { field: reasonSelect, errorId: 'cf-reason-error', focusOn: reasonSelect,
+          check: function () { return reasonSelect.value === '' ? 'Please choose what your message is about.' : ''; } },
+        { field: messageInput, errorId: 'cf-message-error', focusOn: messageInput,
+          check: function () { return validateMessage(messageInput.value, MIN_MESSAGE_LENGTH); } },
+        { field: consentBox, errorId: 'cf-consent-error', focusOn: consentBox,
+          check: function () { return consentBox.checked ? '' : 'Please tick the box to confirm that we may contact you.'; } }
+    ];
+
+    // Runs one check and shows its result. Returns true when the field is fine.
+    function runCheck(item) {
+        const message = item.check();
+        setFieldError(item.field, item.errorId, message);
+        return message === '';
+    }
+
+    // Check each field when the visitor leaves it, and keep re-checking
+    // while they fix a field that is already showing an error.
+    checks.forEach(function (item) {
+        const controls = item.field === methodGroup ? methodRadios : [item.field];
+
+        controls.forEach(function (control) {
+            const isChoice = control.matches('select, input[type="radio"], input[type="checkbox"]');
+
+            if (isChoice) {
+                control.addEventListener('change', function () {
+                    runCheck(item);
+                });
+            } else {
+                control.addEventListener('blur', function () {
+                    runCheck(item);
+                });
+                control.addEventListener('input', function () {
+                    if (item.field.classList.contains('invalid')) {
+                        runCheck(item);
+                    }
+                });
+            }
+        });
+    });
+
+    // Choosing "Phone" makes the phone number required, so re-check it
+    methodRadios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            if (phoneInput.value.trim() !== '' || phoneInput.classList.contains('invalid')) {
+                runCheck(checks[2]);
+            }
+        });
+    });
+
+    // Live character counter under the message box
+    messageInput.addEventListener('input', function () {
+        messageCount.textContent = messageInput.value.length + ' / ' + messageInput.maxLength + ' characters';
+    });
+
+    // ----- The "your email is ready" panel (built once, hidden until needed) -----
+    const panelSection = document.getElementById('contact-form');
+    const panel = createElement('div', 'email-ready', { hidden: '' });
+    const panelHeading = createElement('h3', null, { tabindex: '-1' });
+    const panelIntro = createElement('p');
+    const panelPreview = createElement('pre', 'email-preview');
+    const panelActions = createElement('div', 'email-actions');
+    const openLink = createElement('a', 'cta-button');
+    const copyButton = createElement('button', 'secondary-button', { type: 'button' });
+    const editButton = createElement('button', 'secondary-button', { type: 'button' });
+    const panelStatus = createElement('p', 'copy-status', { 'aria-live': 'polite' });
+    const panelHint = createElement('p', 'email-hint');
+
+    panelHeading.textContent = 'Your email is ready';
+    panelIntro.textContent = 'Check your email below. When you are happy with it, choose "Open in my email app" and press send there.';
+    openLink.textContent = 'Open in my email app';
+    copyButton.textContent = 'Copy email text';
+    editButton.textContent = 'Edit my message';
+    panelHint.textContent = 'If nothing opens, choose "Copy email text" and paste it into a new email to ' + CONTACT_EMAIL + '.';
+
+    panelActions.appendChild(openLink);
+    panelActions.appendChild(copyButton);
+    panelActions.appendChild(editButton);
+    panel.appendChild(panelHeading);
+    panel.appendChild(panelIntro);
+    panel.appendChild(panelPreview);
+    panel.appendChild(panelActions);
+    panel.appendChild(panelStatus);
+    panel.appendChild(panelHint);
+    panelSection.appendChild(panel);
+
+    let currentEmail = null;
+
+    copyButton.addEventListener('click', function () {
+        const fullText = 'To: ' + currentEmail.to + '\nSubject: ' + currentEmail.subject +
+            '\n\n' + currentEmail.body;
+
+        copyTextToClipboard(fullText)
+            .then(function () {
+                panelStatus.textContent = 'Email text copied. You can now paste it into a new email.';
+            })
+            .catch(function () {
+                panelStatus.textContent = 'Sorry, we could not copy automatically. Please select the text above and copy it.';
+            });
+    });
+
+    editButton.addEventListener('click', function () {
+        panel.hidden = true;
+        form.hidden = false;
+        panelStatus.textContent = '';
+        messageInput.focus();
+    });
+
+    // ----- What happens when the visitor presses "Prepare My Email" -----
+    form.addEventListener('submit', function (event) {
+        // Stop the browser from reloading the page
+        event.preventDefault();
+
+        // Run every check (not just the first one that fails)
+        const failed = checks.filter(function (item) {
+            return !runCheck(item);
+        });
+
+        if (failed.length > 0) {
+            summary.textContent = failed.length === 1
+                ? 'Please fix the 1 highlighted field below.'
+                : 'Please fix the ' + failed.length + ' highlighted fields below.';
+            summary.hidden = false;
+            failed[0].focusOn.focus();
+            return;
+        }
+
+        summary.hidden = true;
+
+        currentEmail = buildContactEmail({
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            phone: phoneInput.value.trim(),
+            method: getSelectedMethod(),
+            reason: reasonSelect.value,
+            message: messageInput.value.trim(),
+            updates: updatesBox.checked
+        });
+
+        panelPreview.textContent = 'To: ' + currentEmail.to + '\nSubject: ' + currentEmail.subject +
+            '\n\n' + currentEmail.body;
+        openLink.setAttribute('href', currentEmail.mailto);
+
+        form.hidden = true;
+        panel.hidden = false;
+        panelHeading.focus();
+    });
+}
+
+
+/* ---------------------------------------------------------
+   12. START EVERYTHING WHEN THE PAGE HAS LOADED
 --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
     // Tells the CSS that JavaScript is working (used by the reveal animation)
@@ -605,4 +1059,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initAccordions();
     initLightbox();
     initDogDirectory();
+    initMap();
+    initContactForm();
 });
