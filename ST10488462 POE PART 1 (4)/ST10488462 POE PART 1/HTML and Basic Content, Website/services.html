@@ -4,20 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Meet the dogs available for adoption at Paws Haven Animal Rescue and learn about our adoption process.">
-    <meta name="keywords" content="dog adoption, adopt a dog, rescue dogs, Paws Haven">
+    <meta name="description" content="Search rescue dogs available for adoption in Pretoria and Centurion. Filter by age and size, read each dog's story and learn how adoption works.">
+    <meta name="keywords" content="adopt a dog Pretoria, rescue dogs, dog adoption, dogs for adoption, Centurion">
 
     <!-- Links this page to the external stylesheet, so all styling is in one shared file -->
     <link rel="stylesheet" href="style.css">
 
-    <title>Paws Haven Animal Rescue | Adoption</title>
+    <title>Adopt a Rescue Dog in Pretoria | Paws Haven Animal Rescue</title>
+
+    <!-- SEO: the preferred (canonical) address of this page, so search engines do not treat duplicates as separate pages -->
+    <link rel="canonical" href="https://pawshaven-st10488462.netlify.app/services">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#d97845">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+    <!-- Social media sharing (Open Graph and Twitter): controls how this page looks when shared on Facebook, WhatsApp, X and similar -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Paws Haven Animal Rescue">
+    <meta property="og:title" content="Adopt a Rescue Dog in Pretoria | Paws Haven Animal Rescue">
+    <meta property="og:description" content="Search rescue dogs available for adoption in Pretoria and Centurion. Filter by age and size, read each dog's story and learn how adoption works.">
+    <meta property="og:url" content="https://pawshaven-st10488462.netlify.app/services">
+    <meta property="og:image" content="https://pawshaven-st10488462.netlify.app/images/hero-dog.jpg">
+    <meta property="og:image:alt" content="A happy white rescue dog smiling at the camera">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Links the JavaScript file. 'defer' makes it run only after the whole page has loaded -->
     <script src="js/script.js" defer></script>
 </head>
 <body>
 
     <header>
-        <h1>Paws Haven Animal Rescue</h1>
+        <p class="site-title">Paws Haven Animal Rescue</p>
         <p>Giving rescued dogs a second chance at life</p>
 
         <nav>
@@ -35,7 +51,7 @@
 
         <!-- Intro to the adoption page -->
         <section id="adoption-intro">
-            <h2>Dogs Available for Adoption</h2>
+            <h1>Dogs Available for Adoption</h1>
             <p>
                 Every dog at Paws Haven has been rescued, medically treated, and
                 assessed for temperament before being made available for adoption.
@@ -98,19 +114,19 @@
         <section id="available-dogs">
 
             <article class="dog-card">
-                <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog available for adoption" data-lightbox="dogs" data-caption="Buddy: 2 years old, friendly and energetic">
+                <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog available for adoption" data-lightbox="dogs" data-caption="Buddy: 2 years old, friendly and energetic" width="360" height="640" loading="lazy">
                 <h3>Buddy</h3>
                 <p>Age: 2 years | Breed: Mixed | Friendly, energetic, great with kids.</p>
             </article>
 
             <article class="dog-card">
-                <img src="images/dog-luna.jpg" alt="Luna, a small black dog available for adoption" data-lightbox="dogs" data-caption="Luna: 4 years old, calm and affectionate">
+                <img src="images/dog-luna.jpg" alt="Luna, a small scruffy terrier mix available for adoption" data-lightbox="dogs" data-caption="Luna: 4 years old, calm and affectionate" width="720" height="1023" loading="lazy">
                 <h3>Luna</h3>
                 <p>Age: 4 years | Breed: Terrier mix | Calm, affectionate, loves cuddles.</p>
             </article>
 
             <article class="dog-card">
-                <img src="images/dog-max.jpg" alt="Max, a large dog available for adoption" data-lightbox="dogs" data-caption="Max: 1 year old, playful and needs an active home">
+                <img src="images/dog-max.jpg" alt="Max, a large tan Labrador mix available for adoption" data-lightbox="dogs" data-caption="Max: 1 year old, playful and needs an active home" width="900" height="900" loading="lazy">
                 <h3>Max</h3>
                 <p>Age: 1 year | Breed: Labrador mix | Playful, needs an active home.</p>
             </article>
@@ -180,13 +196,31 @@
                 </div>
 
             </div>
+
+            <p>
+                Still have questions? <a href="contact.html">Contact our team</a>, or find out how you
+                can <a href="enquiry.html">volunteer or sponsor a dog</a> instead.
+            </p>
         </section>
 
     </main>
 
     <footer>
         <p>&copy; 2026 Paws Haven Animal Rescue. All rights reserved.</p>
-        <p>Contact us: <a href="contact.html">contact.html</a></p>
+        <p class="footer-links">
+            <a href="index.html">Home</a> |
+            <a href="about.html">About Us</a> |
+            <a href="services.html">Adopt a Dog</a> |
+            <a href="enquiry.html">Volunteer or Sponsor</a> |
+            <a href="contact.html">Contact Us</a>
+        </p>
+        <p>Email: <a href="mailto:info@pawshaven.org">info@pawshaven.org</a> | Phone: 012 345 6789</p>
+        <p class="share-links">
+            Share this page:
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fservices" target="_blank" rel="noopener noreferrer" aria-label="Share this page on Facebook (opens in a new tab)">Facebook</a> |
+            <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fservices" target="_blank" rel="noopener noreferrer" aria-label="Share this page on X (opens in a new tab)">X</a> |
+            <a href="https://wa.me/?text=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fservices" target="_blank" rel="noopener noreferrer" aria-label="Share this page on WhatsApp (opens in a new tab)">WhatsApp</a>
+        </p>
     </footer>
 
 </body>

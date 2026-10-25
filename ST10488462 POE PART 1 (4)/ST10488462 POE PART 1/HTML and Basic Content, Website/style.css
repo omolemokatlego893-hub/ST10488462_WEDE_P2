@@ -31,6 +31,7 @@
 
 img {
     max-width: 100%;
+    height: auto; /* with the width/height attributes in the HTML, keeps the correct shape while reserving space */
     display: block;
 }
 
@@ -1452,4 +1453,53 @@ button[type="submit"]:disabled {
     .enquiry-response {
         animation: none;
     }
+}
+
+
+/* =========================================================
+   PART 3 ADDITIONS: SEO AND STRUCTURE
+   28. Page headings and site title
+   29. Footer links and share links
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   28. PAGE HEADINGS AND SITE TITLE
+   Each page has one unique <h1> for search engines. The site
+   name in the header is now a styled paragraph that looks
+   exactly like the old header heading.
+--------------------------------------------------------- */
+.site-title {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: var(--font-h1);
+    font-weight: bold;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    color: var(--color-primary-dark);
+    margin-bottom: var(--space-sm);
+    max-width: none;
+}
+
+/* The page heading keeps the size the old section headings had */
+main h1 {
+    font-size: var(--font-h2);
+}
+
+/* A heading directly under the page heading (About page) is a smaller subheading */
+main h1 + h2 {
+    font-size: var(--font-h3);
+}
+
+
+/* ---------------------------------------------------------
+   29. FOOTER LINKS AND SHARE LINKS
+--------------------------------------------------------- */
+.footer-links,
+.share-links {
+    font-size: 0.95rem;
+}
+
+footer a:hover,
+footer a:focus-visible {
+    color: var(--color-primary);
 }

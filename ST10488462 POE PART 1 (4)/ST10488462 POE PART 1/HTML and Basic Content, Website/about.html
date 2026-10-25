@@ -4,13 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Learn about Paws Haven Animal Rescue's history, mission, and the team dedicated to rescuing and rehoming dogs in need.">
-    <meta name="keywords" content="dog rescue, animal shelter, about us, non-profit, Paws Haven">
+    <meta name="description" content="Meet the team behind Paws Haven Animal Rescue. Learn our story, mission and vision, and see photos of the rescued dogs and volunteers we work with.">
+    <meta name="keywords" content="about Paws Haven, dog rescue team, animal shelter mission, non-profit, Pretoria">
 
     <!-- Links this page to the external stylesheet, so all styling is in one shared file -->
     <link rel="stylesheet" href="style.css">
 
-    <title>Paws Haven Animal Rescue | About Us</title>
+    <title>About Our Dog Rescue Team | Paws Haven Animal Rescue</title>
+
+    <!-- SEO: the preferred (canonical) address of this page, so search engines do not treat duplicates as separate pages -->
+    <link rel="canonical" href="https://pawshaven-st10488462.netlify.app/about">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#d97845">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+    <!-- Social media sharing (Open Graph and Twitter): controls how this page looks when shared on Facebook, WhatsApp, X and similar -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Paws Haven Animal Rescue">
+    <meta property="og:title" content="About Our Dog Rescue Team | Paws Haven Animal Rescue">
+    <meta property="og:description" content="Meet the team behind Paws Haven Animal Rescue. Learn our story, mission and vision, and see photos of the rescued dogs and volunteers we work with.">
+    <meta property="og:url" content="https://pawshaven-st10488462.netlify.app/about">
+    <meta property="og:image" content="https://pawshaven-st10488462.netlify.app/images/hero-dog.jpg">
+    <meta property="og:image:alt" content="A happy white rescue dog smiling at the camera">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Links the JavaScript file. 'defer' makes it run only after the whole page has loaded -->
     <script src="js/script.js" defer></script>
 </head>
@@ -18,7 +34,7 @@
 
     <!-- HEADER: identical to index.html so the site feels consistent -->
     <header>
-        <h1>Paws Haven Animal Rescue</h1>
+        <p class="site-title">Paws Haven Animal Rescue</p>
         <p>Giving rescued dogs a second chance at life</p>
 
         <!-- NAV: same navigation menu as every other page -->
@@ -38,6 +54,7 @@
 
         <!-- Section explaining the charity's history -->
         <section id="our-story">
+            <h1>About Paws Haven Animal Rescue</h1>
             <h2>Our Story</h2>
             <p>
                 Paws Haven Animal Rescue was founded by a group of local animal
@@ -46,6 +63,11 @@
                 volunteers fostering dogs in their own homes has grown into a
                 small shelter facility offering emergency intake, veterinary
                 care, and rehabilitation for dogs in need.
+            </p>
+            <p>
+                Ready to help? You can <a href="services.html">adopt a rescue dog</a>,
+                <a href="enquiry.html">volunteer or sponsor a dog</a>, or
+                <a href="contact.html">get in touch with our team</a>.
             </p>
         </section>
 
@@ -74,7 +96,7 @@
                 who help with feeding, walking, and socialising the dogs in
                 our care.
             </p>
-            <img src="images/team-photo.jpg" alt="Paws Haven staff and volunteers with rescued dogs" data-lightbox="team" data-caption="Our staff and volunteers with some of the dogs in our care">
+            <img src="images/team-photo.jpg" alt="Paws Haven staff and volunteers with rescued dogs" data-lightbox="team" data-caption="Our staff and volunteers with some of the dogs in our care" width="1400" height="934" loading="lazy">
         </section>
 
         <!-- Photo gallery: click any photo to open it in the lightbox viewer (see js/script.js) -->
@@ -84,23 +106,23 @@
 
             <div class="gallery">
                 <figure class="gallery-item">
-                    <img src="images/hero-dog.jpg" alt="A happy white rescued dog smiling at the camera" data-lightbox="gallery" data-caption="A happy rescue dog enjoying life at Paws Haven">
+                    <img src="images/hero-dog.jpg" alt="A happy white rescued dog smiling at the camera" data-lightbox="gallery" data-caption="A happy rescue dog enjoying life at Paws Haven" width="980" height="980" loading="lazy">
                     <figcaption>Happy rescue</figcaption>
                 </figure>
                 <figure class="gallery-item">
-                    <img src="images/team-photo.jpg" alt="Paws Haven volunteers petting a brown dog at the shelter" data-lightbox="gallery" data-caption="Our volunteers giving the dogs the attention they deserve">
+                    <img src="images/team-photo.jpg" alt="Paws Haven volunteers petting a brown dog at the shelter" data-lightbox="gallery" data-caption="Our volunteers giving the dogs the attention they deserve" width="1400" height="934" loading="lazy">
                     <figcaption>Our volunteers</figcaption>
                 </figure>
                 <figure class="gallery-item">
-                    <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog standing on grass" data-lightbox="gallery" data-caption="Buddy enjoying some time on the grass">
+                    <img src="images/dog-buddy.jpg" alt="Buddy, a medium-sized brown dog standing on grass" data-lightbox="gallery" data-caption="Buddy enjoying some time on the grass" width="360" height="640" loading="lazy">
                     <figcaption>Buddy</figcaption>
                 </figure>
                 <figure class="gallery-item">
-                    <img src="images/dog-luna.jpg" alt="Luna, a small scruffy terrier mix looking up at the camera" data-lightbox="gallery" data-caption="Luna, our calm and affectionate terrier mix">
+                    <img src="images/dog-luna.jpg" alt="Luna, a small scruffy terrier mix looking up at the camera" data-lightbox="gallery" data-caption="Luna, our calm and affectionate terrier mix" width="720" height="1023" loading="lazy">
                     <figcaption>Luna</figcaption>
                 </figure>
                 <figure class="gallery-item">
-                    <img src="images/dog-max.jpg" alt="Max, a tan Labrador mix standing in front of green bushes" data-lightbox="gallery" data-caption="Max, a playful Labrador mix who loves to run">
+                    <img src="images/dog-max.jpg" alt="Max, a tan Labrador mix standing in front of green bushes" data-lightbox="gallery" data-caption="Max, a playful Labrador mix who loves to run" width="900" height="900" loading="lazy">
                     <figcaption>Max</figcaption>
                 </figure>
             </div>
@@ -111,7 +133,20 @@
     <!-- FOOTER: identical to index.html -->
     <footer>
         <p>&copy; 2026 Paws Haven Animal Rescue. All rights reserved.</p>
-        <p>Contact us: <a href="contact.html">contact.html</a></p>
+        <p class="footer-links">
+            <a href="index.html">Home</a> |
+            <a href="about.html">About Us</a> |
+            <a href="services.html">Adopt a Dog</a> |
+            <a href="enquiry.html">Volunteer or Sponsor</a> |
+            <a href="contact.html">Contact Us</a>
+        </p>
+        <p>Email: <a href="mailto:info@pawshaven.org">info@pawshaven.org</a> | Phone: 012 345 6789</p>
+        <p class="share-links">
+            Share this page:
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fabout" target="_blank" rel="noopener noreferrer" aria-label="Share this page on Facebook (opens in a new tab)">Facebook</a> |
+            <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fabout" target="_blank" rel="noopener noreferrer" aria-label="Share this page on X (opens in a new tab)">X</a> |
+            <a href="https://wa.me/?text=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fabout" target="_blank" rel="noopener noreferrer" aria-label="Share this page on WhatsApp (opens in a new tab)">WhatsApp</a>
+        </p>
     </footer>
 
 </body>

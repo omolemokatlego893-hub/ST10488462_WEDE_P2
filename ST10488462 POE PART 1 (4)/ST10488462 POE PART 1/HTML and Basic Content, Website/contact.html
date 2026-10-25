@@ -4,13 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Get in touch with Paws Haven Animal Rescue. Find our shelter locations and contact details.">
-    <meta name="keywords" content="contact, dog shelter locations, Paws Haven">
+    <meta name="description" content="Contact Paws Haven Animal Rescue. Find our Pretoria shelter and Centurion adoption centre on the map, get directions and send us a message.">
+    <meta name="keywords" content="contact Paws Haven, dog shelter locations, Pretoria, Centurion, animal rescue">
 
     <!-- Links this page to the external stylesheet, so all styling is in one shared file -->
     <link rel="stylesheet" href="style.css">
 
-    <title>Paws Haven Animal Rescue | Contact</title>
+    <title>Contact &amp; Shelter Locations | Paws Haven Animal Rescue</title>
+
+    <!-- SEO: the preferred (canonical) address of this page, so search engines do not treat duplicates as separate pages -->
+    <link rel="canonical" href="https://pawshaven-st10488462.netlify.app/contact">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#d97845">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+    <!-- Social media sharing (Open Graph and Twitter): controls how this page looks when shared on Facebook, WhatsApp, X and similar -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Paws Haven Animal Rescue">
+    <meta property="og:title" content="Contact &amp; Shelter Locations | Paws Haven Animal Rescue">
+    <meta property="og:description" content="Contact Paws Haven Animal Rescue. Find our Pretoria shelter and Centurion adoption centre on the map, get directions and send us a message.">
+    <meta property="og:url" content="https://pawshaven-st10488462.netlify.app/contact">
+    <meta property="og:image" content="https://pawshaven-st10488462.netlify.app/images/hero-dog.jpg">
+    <meta property="og:image:alt" content="A happy white rescue dog smiling at the camera">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Page speed: start connecting to the map servers early -->
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+
     <!-- Leaflet: a free, open-source library for interactive maps (loaded only on this page).
          The integrity values make the browser check the files have not been tampered with. -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -24,7 +44,7 @@
 <body>
 
     <header>
-        <h1>Paws Haven Animal Rescue</h1>
+        <p class="site-title">Paws Haven Animal Rescue</p>
         <p>Giving rescued dogs a second chance at life</p>
 
         <nav>
@@ -41,10 +61,15 @@
     <main>
 
         <section id="contact-details">
-            <h2>Get in Touch</h2>
+            <h1>Contact Paws Haven Animal Rescue</h1>
             <p>Email: <a href="mailto:info@pawshaven.org">info@pawshaven.org</a></p>
             <p>Phone: 012 345 6789</p>
             <p>Opening Hours: Monday - Saturday, 9am - 4pm</p>
+            <p>
+                Looking to adopt or help out? See our
+                <a href="services.html">dogs available for adoption</a> or our
+                <a href="enquiry.html">volunteer and sponsorship options</a>.
+            </p>
         </section>
 
         <!-- Two shelter locations, shown on one interactive map (Leaflet, see js/script.js) -->
@@ -148,7 +173,20 @@
 
     <footer>
         <p>&copy; 2026 Paws Haven Animal Rescue. All rights reserved.</p>
-        <p>Contact us: <a href="contact.html">contact.html</a></p>
+        <p class="footer-links">
+            <a href="index.html">Home</a> |
+            <a href="about.html">About Us</a> |
+            <a href="services.html">Adopt a Dog</a> |
+            <a href="enquiry.html">Volunteer or Sponsor</a> |
+            <a href="contact.html">Contact Us</a>
+        </p>
+        <p>Email: <a href="mailto:info@pawshaven.org">info@pawshaven.org</a> | Phone: 012 345 6789</p>
+        <p class="share-links">
+            Share this page:
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fcontact" target="_blank" rel="noopener noreferrer" aria-label="Share this page on Facebook (opens in a new tab)">Facebook</a> |
+            <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fcontact" target="_blank" rel="noopener noreferrer" aria-label="Share this page on X (opens in a new tab)">X</a> |
+            <a href="https://wa.me/?text=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2Fcontact" target="_blank" rel="noopener noreferrer" aria-label="Share this page on WhatsApp (opens in a new tab)">WhatsApp</a>
+        </p>
     </footer>
 
 </body>

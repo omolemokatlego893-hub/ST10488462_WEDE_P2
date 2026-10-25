@@ -1,0 +1,8 @@
+# robots.txt for Paws Haven Animal Rescue
+# Tells search engine crawlers they are welcome to read the whole site,
+# and where to find the sitemap.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://pawshaven-st10488462.netlify.app/sitemap.xml

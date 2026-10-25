@@ -1,0 +1,7 @@
+# Security headers, applied by Netlify to every page.
+# (HTTPS itself is switched on automatically by Netlify.)
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

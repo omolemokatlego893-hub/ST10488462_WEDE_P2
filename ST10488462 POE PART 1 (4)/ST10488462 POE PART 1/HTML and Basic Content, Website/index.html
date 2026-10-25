@@ -7,23 +7,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO: a short description of the page shown in Google search results -->
-    <meta name="description" content="Paws Haven Animal Rescue is a non-profit dog shelter providing rescue, medical care, and adoption services for dogs in need.">
+    <meta name="description" content="Paws Haven Animal Rescue is a non-profit dog shelter in Pretoria. Adopt a rescue dog, volunteer your time or sponsor a dog's medical care today.">
     <!-- SEO: keywords related to the page content -->
-    <meta name="keywords" content="dog rescue, animal shelter, dog adoption, non-profit, Paws Haven">
+    <meta name="keywords" content="dog rescue Pretoria, animal shelter, dog adoption, non-profit, Paws Haven">
 
     <!-- The text shown in the browser tab -->
     <!-- Links this page to the external stylesheet, so all styling is in one shared file -->
     <link rel="stylesheet" href="style.css">
 
-    <title>Paws Haven Animal Rescue | Home</title>
+    <title>Dog Rescue &amp; Adoption in Pretoria | Paws Haven Animal Rescue</title>
+
+    <!-- SEO: the preferred (canonical) address of this page, so search engines do not treat duplicates as separate pages -->
+    <link rel="canonical" href="https://pawshaven-st10488462.netlify.app/">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#d97845">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+    <!-- Social media sharing (Open Graph and Twitter): controls how this page looks when shared on Facebook, WhatsApp, X and similar -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Paws Haven Animal Rescue">
+    <meta property="og:title" content="Dog Rescue &amp; Adoption in Pretoria | Paws Haven Animal Rescue">
+    <meta property="og:description" content="Paws Haven Animal Rescue is a non-profit dog shelter in Pretoria. Adopt a rescue dog, volunteer your time or sponsor a dog's medical care today.">
+    <meta property="og:url" content="https://pawshaven-st10488462.netlify.app/">
+    <meta property="og:image" content="https://pawshaven-st10488462.netlify.app/images/hero-dog.jpg">
+    <meta property="og:image:alt" content="A happy white rescue dog smiling at the camera">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Links the JavaScript file. 'defer' makes it run only after the whole page has loaded -->
     <script src="js/script.js" defer></script>
+    <!-- Local SEO: structured data that tells search engines about our two shelter locations -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AnimalShelter",
+      "@id": "https://pawshaven-st10488462.netlify.app/#main-shelter",
+      "name": "Paws Haven Animal Rescue - Main Shelter",
+      "url": "https://pawshaven-st10488462.netlify.app/",
+      "description": "Non-profit dog shelter providing rescue, medical care and adoption services for dogs in need.",
+      "image": "https://pawshaven-st10488462.netlify.app/images/hero-dog.jpg",
+      "email": "info@pawshaven.org",
+      "telephone": "+27123456789",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Pretoria",
+        "addressRegion": "Gauteng",
+        "addressCountry": "ZA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -25.7479,
+        "longitude": 28.2293
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday"
+        ],
+        "opens": "09:00",
+        "closes": "16:00"
+      }
+    },
+    {
+      "@type": "AnimalShelter",
+      "@id": "https://pawshaven-st10488462.netlify.app/#centurion-centre",
+      "name": "Paws Haven Animal Rescue - Satellite Adoption Centre",
+      "url": "https://pawshaven-st10488462.netlify.app/contact",
+      "parentOrganization": {
+        "@id": "https://pawshaven-st10488462.netlify.app/#main-shelter"
+      },
+      "description": "Satellite adoption centre where visitors can meet dogs ready for adoption.",
+      "email": "info@pawshaven.org",
+      "telephone": "+27123456789",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Centurion",
+        "addressRegion": "Gauteng",
+        "addressCountry": "ZA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -25.8603,
+        "longitude": 28.1894
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday"
+        ],
+        "opens": "09:00",
+        "closes": "16:00"
+      }
+    }
+  ]
+}
+    </script>
 </head>
 <body>
 
     <!-- HEADER: appears at the top of every page -->
     <header>
-        <h1>Paws Haven Animal Rescue</h1>
+        <p class="site-title">Paws Haven Animal Rescue</p>
         <p>Giving rescued dogs a second chance at life</p>
 
         <!-- NAV: the main navigation menu, repeated identically on every page -->
@@ -43,8 +137,8 @@
 
         <!-- Hero section: the big welcome banner -->
         <section id="hero">
-            <img src="images/hero-dog.jpg" alt="A happy rescued dog at Paws Haven shelter">
-            <h2>Every Dog Deserves a Loving Home</h2>
+            <img src="images/hero-dog.jpg" alt="A happy white rescue dog at the Paws Haven shelter, smiling at the camera" width="980" height="980" fetchpriority="high">
+            <h1>Every Dog Deserves a Loving Home</h1>
             <p>
                 Paws Haven Animal Rescue is a non-profit organisation dedicated to
                 rescuing, sheltering, and providing medical care to abandoned,
@@ -72,7 +166,8 @@
             <p>
                 Whether you want to adopt, volunteer your time, or sponsor a dog's
                 medical care, there are many ways to support our mission. Visit our
-                <a href="enquiry.html">enquiry page</a> to find out how you can help.
+                <a href="enquiry.html">enquiry page</a> to find out how you can help,
+                or read <a href="about.html">our story and meet the team</a>.
             </p>
         </section>
 
@@ -81,7 +176,20 @@
     <!-- FOOTER: appears at the bottom of every page -->
     <footer>
         <p>&copy; 2026 Paws Haven Animal Rescue. All rights reserved.</p>
-        <p>Contact us: <a href="contact.html">contact.html</a></p>
+        <p class="footer-links">
+            <a href="index.html">Home</a> |
+            <a href="about.html">About Us</a> |
+            <a href="services.html">Adopt a Dog</a> |
+            <a href="enquiry.html">Volunteer or Sponsor</a> |
+            <a href="contact.html">Contact Us</a>
+        </p>
+        <p>Email: <a href="mailto:info@pawshaven.org">info@pawshaven.org</a> | Phone: 012 345 6789</p>
+        <p class="share-links">
+            Share this page:
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2F" target="_blank" rel="noopener noreferrer" aria-label="Share this page on Facebook (opens in a new tab)">Facebook</a> |
+            <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2F" target="_blank" rel="noopener noreferrer" aria-label="Share this page on X (opens in a new tab)">X</a> |
+            <a href="https://wa.me/?text=https%3A%2F%2Fpawshaven-st10488462.netlify.app%2F" target="_blank" rel="noopener noreferrer" aria-label="Share this page on WhatsApp (opens in a new tab)">WhatsApp</a>
+        </p>
     </footer>
 
 </body>

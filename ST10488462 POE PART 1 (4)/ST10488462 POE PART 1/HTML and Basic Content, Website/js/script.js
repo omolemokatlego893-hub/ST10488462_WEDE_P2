@@ -54,16 +54,31 @@ function createElement(tag, className, attributes) {
    we change the page after it has loaded.
 --------------------------------------------------------- */
 function highlightActiveNavLink() {
-    // Get just the file name from the address, e.g. "about.html"
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    // The web address might be /services.html (on your computer) or just
+    // /services (on the live site), so remove ".html" before comparing.
+    const path = window.location.pathname;
+    const currentPage = (path.replace(/\/+$/, '').split('/').pop() || 'index').replace(/\.html$/, '');
+    let foundMatch = false;
 
     document.querySelectorAll('nav a').forEach(function (link) {
-        if (link.getAttribute('href') === currentPage) {
+        const linkPage = (link.getAttribute('href') || '').replace(/\.html$/, '');
+
+        if (linkPage === currentPage) {
             link.classList.add('active');
             // Helps screen readers announce which page is current
             link.setAttribute('aria-current', 'page');
+            foundMatch = true;
         }
     });
+
+    // Visitors who arrive at the folder address (ending in "/") are on the home page
+    if (!foundMatch && path.endsWith('/')) {
+        const homeLink = document.querySelector('nav a[href="index.html"]');
+        if (homeLink) {
+            homeLink.classList.add('active');
+            homeLink.setAttribute('aria-current', 'page');
+        }
+    }
 }
 
 
